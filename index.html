@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa de precios - Competencia CRM</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 20px;
+      background: #f5f5f7;
+      color: #222;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 15px 0;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #f0f0f5;
+      font-weight: 600;
+    }
+    tr:hover {
+      background: #f9f9ff;
+    }
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 900px) {
+      .charts {
+        grid-template-columns: 1fr 1fr;
+      }
+      .charts canvas {
+        max-height: 320px;
+      }
+    }
+    .chart-full {
+      margin-top: 30px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #eef;
+      margin-left: 4px;
+    }
+    ul {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .notas {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mapa de precios de la competencia</h1>
+    <p>
+      Análisis comparativo de costos de implementación y fees mensuales para distintas plataformas de CRM con IA.
+    </p>
+
+    <h2>Tabla de precios</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>CRM</th>
+          <th>Set up IA (USD)</th>
+          <th>Fee IA (USD)<br><span class="badge">escenario 3.000 interacciones</span></th>
+          <th>Fee sin IA (USD)<br><span class="badge">10 usuarios</span></th>
+          <th>Fee total mensual (USD)</th>
+          <th>Primer mes: fee total + set up (USD)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chattigo</td><td>840</td><td>180</td><td>450</td><td>630</td><td>1470</td>
+        </tr>
+        <tr>
+          <td>Zenvia</td><td>137</td><td>0</td><td>440</td><td>440</td><td>577</td>
+        </tr>
+        <tr>
+          <td>Call bell (1)</td><td>1200</td><td>154</td><td>200</td><td>354</td><td>1554</td>
+        </tr>
+        <tr>
+          <td>Bot Maker (1)</td><td>1500</td><td>154</td><td>150</td><td>304</td><td>1804</td>
+        </tr>
+        <tr>
+          <td>Kommo (2)</td><td>0</td><td>279</td><td>250</td><td>529</td><td>529</td>
+        </tr>
+        <tr>
+          <td>Take a Blip</td><td>3000</td><td>0</td><td>1000</td><td>1000</td><td>4000</td>
+        </tr>
+        <tr>
+          <td>B2chat (1)</td><td>80</td><td>154</td><td>370</td><td>524</td><td>604</td>
+        </tr>
+        <tr>
+          <td>Pip</td><td>200</td><td>300</td><td>279</td><td>579</td><td>779</td>
+        </tr>
+        <tr>
+          <td>Vambe</td><td>325</td><td>0</td><td>590</td><td>590</td><td>915</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="notas">
+      <p><strong>(1)</strong> Se paga vía API OpenAI. Costo aproximado de 154 USD incluido en “fee IA”.</p>
+      <p><strong>(2)</strong> También se paga a OpenAI 154 USD, sumando al fee propio de 125 USD (total 279 USD de IA).</p>
+    </div>
+
+    <h2>Resumen de posiciones</h2>
+    <ul>
+      <li><strong>Mínimo costo mensual (fee total):</strong> Bot Maker (304), Call bell (354), Zenvia (440).</li>
+      <li><strong>Mínimo costo primer mes (fee + set up):</strong> Kommo (529), Zenvia (577), B2chat (604), Pip (779).</li>
+      <li><strong>Plataformas con mayor barrera de entrada por set up:</strong> Take a Blip (3000), Bot Maker (1500), Call bell (1200).</li>
+      <li><strong>Plataformas sin costo de IA (fee IA = 0):</strong> Zenvia, Take a Blip, Vambe.</li>
+    </ul>
+
+    <div class="charts">
+      <div>
+        <h3>Costo mensual total (sin set up)</h3>
+        <canvas id="chartMensual"></canvas>
+      </div>
+      <div>
+        <h3>Costo del primer mes (fee + set up)</h3>
+        <canvas id="chartPrimerMes"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-full">
+      <h3>Detalle fee IA vs sin IA por plataforma</h3>
+      <canvas id="chartIaVsSinIa"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Datos base actualizados
+    const labels = [
+      "Chattigo",
+      "Zenvia",
+      "Call bell (1)",
+      "Bot Maker (1)",
+      "Kommo (2)",
+      "Take a Blip",
+      "B2chat (1)",
+      "Pip",
+      "Vambe"
+    ];
+
+    const setupIA   = [840, 137, 1200, 1500, 0, 3000, 80, 200, 325];
+    const feeIA     = [180,   0, 154, 154, 279,   0, 154, 300,   0];
+    const feeSinIA  = [450, 440, 200, 150, 250, 1000, 370, 279, 590];
+    const feeTotal  = [630, 440, 354, 304, 529, 1000, 524, 579, 590];
+    const feeTotalMasSetup = [1470, 577, 1554, 1804, 529, 4000, 604, 779, 915];
+
+    // Colores simples
+    const mainColor = "rgba(54, 162, 235, 0.8)";
+    const secondColor = "rgba(75, 192, 192, 0.8)";
+    const thirdColor = "rgba(255, 159, 64, 0.8)";
+
+    // Gráfico 1 - Costo mensual total
+    const ctxMensual = document.getElementById("chartMensual").getContext("2d");
+    new Chart(ctxMensual, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Fee total mensual (USD)",
+          data: feeTotal,
+          backgroundColor: mainColor
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => `USD ${context.parsed.y}`
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { font: { size: 11 } } },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "USD/mes" }
+          }
+        }
+      }
+    });
+
+    // Gráfico 2 - Costo primer mes (fee + set up)
+    const ctxPrimerMes = document.getElementById("chartPrimerMes").getContext("2d");
+    new Chart(ctxPrimerMes, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Primer mes (fee + set up) (USD)",
+          data: feeTotalMasSetup,
+          backgroundColor: secondColor
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => `USD ${context.parsed.y}`
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { font: { size: 11 } } },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "USD primer mes" }
+          }
+        }
+      }
+    });
+
+    // Gráfico 3 - Fee IA vs Fee sin IA
+    const ctxIaVsSinIa = document.getElementById("chartIaVsSinIa").getContext("2d");
+    new Chart(ctxIaVsSinIa, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Fee IA (USD)",
+            data: feeIA,
+            backgroundColor: mainColor
+          },
+          {
+            label: "Fee sin IA (USD)",
+            data: feeSinIA,
+            backgroundColor: thirdColor
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (context) => `USD ${context.parsed.y}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            stacked: false,
+            ticks: { font: { size: 11 } }
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "USD/mes" }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
