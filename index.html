@@ -2,285 +2,336 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mapa de precios - Competencia CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis de Precios CRM - Competencia</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 20px;
-      background: #f5f5f7;
-      color: #222;
+    /* Estilos base (Dark Mode) copiados del index.html para coherencia */
+    :root {
+        --bg-primary: #0a0e27;
+        --bg-secondary: #111936;
+        --bg-tertiary: #1a2351;
+        --accent-green: #00ff88;
+        --accent-cyan: #00d4ff;
+        --accent-purple: #7c3aed;
+        --text-primary: #ffffff;
+        --text-secondary: #94a3b8;
+        --border-color: rgba(148, 163, 184, 0.1);
+        --card-hover: rgba(0, 255, 136, 0.05);
     }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Navbar Simple */
+    .nav-bar {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .nav-link:hover, .nav-link.active {
+        color: var(--accent-cyan);
+    }
+
     h1, h2, h3 {
       text-align: center;
+      margin-bottom: 1.5rem;
     }
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+
+    h1 {
+        background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
     }
+
+    h2 { color: var(--accent-green); }
+    h3 { color: var(--text-primary); font-size: 1.1rem;}
+
+    /* Tablas Estilizadas */
+    .table-container {
+        background: var(--bg-secondary);
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--border-color);
+        overflow-x: auto;
+        margin-bottom: 3rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0 15px 0;
-      font-size: 14px;
+      min-width: 800px;
     }
-    th, td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
-    }
+
     th {
-      background: #f0f0f5;
-      font-weight: 600;
+      background: var(--bg-tertiary);
+      color: var(--accent-cyan);
+      font-weight: 700;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
     }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+    }
+
     tr:hover {
-      background: #f9f9ff;
+      background: var(--card-hover);
     }
-    .charts {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    @media (min-width: 900px) {
-      .charts {
-        grid-template-columns: 1fr 1fr;
-      }
-      .charts canvas {
-        max-height: 320px;
-      }
-    }
-    .chart-full {
-      margin-top: 30px;
-    }
+
+    /* Badges */
     .badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: #eef;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      background: rgba(124, 58, 237, 0.2);
+      color: #d8b4fe;
       margin-left: 4px;
+      font-family: 'Sora', sans-serif;
     }
-    ul {
-      font-size: 14px;
-      line-height: 1.5;
+
+    /* Insights Box */
+    .insights-box {
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 212, 255, 0.05));
+        border: 1px solid var(--accent-green);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 3rem;
     }
+
+    .insights-box ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .insights-box li {
+        margin-bottom: 0.8rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .insights-box li::before {
+        content: '➤';
+        color: var(--accent-green);
+        position: absolute;
+        left: 0;
+    }
+
+    /* Gráficos */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 900px) {
+      .charts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .chart-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
     .notas {
-      font-size: 12px;
-      color: #555;
-      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      font-style: italic;
+    }
+    
+    .btn-back {
+        display: inline-block;
+        margin-bottom: 2rem;
+        color: var(--accent-cyan);
+        text-decoration: none;
+        font-weight: 600;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
-    <h1>Mapa de precios de la competencia</h1>
-    <p>
-      Análisis comparativo de costos de implementación y fees mensuales para distintas plataformas de CRM con IA.
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-link">🤖 Mapa de Plataformas</a>
+        <a href="precios.html" class="nav-link active">💰 Mapa de Precios CRM</a>
+    </nav>
+
+    <h1>Mapa de Precios de Competencia</h1>
+    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+      Comparativa de costos de implementación (Set up) y Fees mensuales para plataformas CRM con IA.
     </p>
 
-    <h2>Tabla de precios</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>CRM</th>
-          <th>Set up IA (USD)</th>
-          <th>Fee IA (USD)<br><span class="badge">escenario 3.000 interacciones</span></th>
-          <th>Fee sin IA (USD)<br><span class="badge">10 usuarios</span></th>
-          <th>Fee total mensual (USD)</th>
-          <th>Primer mes: fee total + set up (USD)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Chattigo</td><td>840</td><td>180</td><td>450</td><td>630</td><td>1470</td>
-        </tr>
-        <tr>
-          <td>Zenvia</td><td>137</td><td>0</td><td>440</td><td>440</td><td>577</td>
-        </tr>
-        <tr>
-          <td>Call bell (1)</td><td>1200</td><td>154</td><td>200</td><td>354</td><td>1554</td>
-        </tr>
-        <tr>
-          <td>Bot Maker (1)</td><td>1500</td><td>154</td><td>150</td><td>304</td><td>1804</td>
-        </tr>
-        <tr>
-          <td>Kommo (2)</td><td>0</td><td>279</td><td>250</td><td>529</td><td>529</td>
-        </tr>
-        <tr>
-          <td>Take a Blip</td><td>3000</td><td>0</td><td>1000</td><td>1000</td><td>4000</td>
-        </tr>
-        <tr>
-          <td>B2chat (1)</td><td>80</td><td>154</td><td>370</td><td>524</td><td>604</td>
-        </tr>
-        <tr>
-          <td>Pip</td><td>200</td><td>300</td><td>279</td><td>579</td><td>779</td>
-        </tr>
-        <tr>
-          <td>Vambe</td><td>325</td><td>0</td><td>590</td><td>590</td><td>915</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="notas">
-      <p><strong>(1)</strong> Se paga vía API OpenAI. Costo aproximado de 154 USD incluido en “fee IA”.</p>
-      <p><strong>(2)</strong> También se paga a OpenAI 154 USD, sumando al fee propio de 125 USD (total 279 USD de IA).</p>
+    <div class="table-container">
+      <h2>Tabla Comparativa</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>CRM</th>
+            <th>Set up IA</th>
+            <th>Fee IA <br><span class="badge">3k interacciones</span></th>
+            <th>Fee sin IA <br><span class="badge">10 usuarios</span></th>
+            <th>Fee Mensual Total</th>
+            <th>Mes 1 (Fee + Setup)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Chattigo</td><td>$840</td><td>$180</td><td>$450</td><td>$630</td><td>$1470</td></tr>
+          <tr><td>Zenvia</td><td>$137</td><td>$0</td><td>$440</td><td>$440</td><td>$577</td></tr>
+          <tr><td>Call bell (1)</td><td>$1200</td><td>$154</td><td>$200</td><td>$354</td><td>$1554</td></tr>
+          <tr><td>Bot Maker (1)</td><td>$1500</td><td>$154</td><td>$150</td><td>$304</td><td>$1804</td></tr>
+          <tr><td>Kommo (2)</td><td>$0</td><td>$279</td><td>$250</td><td>$529</td><td>$529</td></tr>
+          <tr><td>Take a Blip</td><td>$3000</td><td>$0</td><td>$1000</td><td>$1000</td><td>$4000</td></tr>
+          <tr><td>B2chat (1)</td><td>$80</td><td>$154</td><td>$370</td><td>$524</td><td>$604</td></tr>
+          <tr><td>Pip</td><td>$200</td><td>$300</td><td>$279</td><td>$579</td><td>$779</td></tr>
+          <tr><td>Vambe</td><td>$325</td><td>$0</td><td>$590</td><td>$590</td><td>$915</td></tr>
+        </tbody>
+      </table>
+      <div class="notas">
+        <p><strong>(1)</strong> Se paga vía API OpenAI. Costo aproximado de 154 USD incluido en “fee IA”.</p>
+        <p><strong>(2)</strong> También se paga a OpenAI 154 USD, sumando al fee propio de 125 USD (total 279 USD de IA).</p>
+      </div>
     </div>
 
-    <h2>Resumen de posiciones</h2>
-    <ul>
-      <li><strong>Mínimo costo mensual (fee total):</strong> Bot Maker (304), Call bell (354), Zenvia (440).</li>
-      <li><strong>Mínimo costo primer mes (fee + set up):</strong> Kommo (529), Zenvia (577), B2chat (604), Pip (779).</li>
-      <li><strong>Plataformas con mayor barrera de entrada por set up:</strong> Take a Blip (3000), Bot Maker (1500), Call bell (1200).</li>
-      <li><strong>Plataformas sin costo de IA (fee IA = 0):</strong> Zenvia, Take a Blip, Vambe.</li>
-    </ul>
+    <div class="insights-box">
+      <h2>💡 Resumen de Posiciones</h2>
+      <ul>
+        <li><strong>Mínimo costo mensual (fee total):</strong> <span style="color: var(--accent-green)">Bot Maker ($304)</span>, Call bell ($354), Zenvia ($440).</li>
+        <li><strong>Mínimo costo primer mes (entrada):</strong> <span style="color: var(--accent-green)">Kommo ($529)</span>, Zenvia ($577), B2chat ($604).</li>
+        <li><strong>Barrera de entrada más alta (Setup):</strong> <span style="color: #ff4444">Take a Blip ($3000)</span>, Bot Maker ($1500), Call bell ($1200).</li>
+        <li><strong>Plataformas con Fee IA = 0:</strong> Zenvia, Take a Blip, Vambe (incluido en el plan base).</li>
+      </ul>
+    </div>
 
-    <div class="charts">
-      <div>
-        <h3>Costo mensual total (sin set up)</h3>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Costo Mensual Total (Sin Setup)</h3>
         <canvas id="chartMensual"></canvas>
       </div>
-      <div>
-        <h3>Costo del primer mes (fee + set up)</h3>
+      <div class="chart-card">
+        <h3>Costo Primer Mes (Fee + Setup)</h3>
         <canvas id="chartPrimerMes"></canvas>
       </div>
     </div>
 
-    <div class="chart-full">
-      <h3>Detalle fee IA vs sin IA por plataforma</h3>
-      <canvas id="chartIaVsSinIa"></canvas>
+    <div class="chart-card">
+      <h3>Detalle: Fee IA vs Fee Plataforma</h3>
+      <canvas id="chartIaVsSinIa" style="max-height: 400px;"></canvas>
     </div>
   </div>
 
   <script>
-    // Datos base actualizados
-    const labels = [
-      "Chattigo",
-      "Zenvia",
-      "Call bell (1)",
-      "Bot Maker (1)",
-      "Kommo (2)",
-      "Take a Blip",
-      "B2chat (1)",
-      "Pip",
-      "Vambe"
-    ];
-
+    // Configuración de Chart.js para Dark Mode
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+    
+    const labels = ["Chattigo", "Zenvia", "Call bell", "Bot Maker", "Kommo", "Take a Blip", "B2chat", "Pip", "Vambe"];
     const setupIA   = [840, 137, 1200, 1500, 0, 3000, 80, 200, 325];
     const feeIA     = [180,   0, 154, 154, 279,   0, 154, 300,   0];
     const feeSinIA  = [450, 440, 200, 150, 250, 1000, 370, 279, 590];
     const feeTotal  = [630, 440, 354, 304, 529, 1000, 524, 579, 590];
     const feeTotalMasSetup = [1470, 577, 1554, 1804, 529, 4000, 604, 779, 915];
 
-    // Colores simples
-    const mainColor = "rgba(54, 162, 235, 0.8)";
-    const secondColor = "rgba(75, 192, 192, 0.8)";
-    const thirdColor = "rgba(255, 159, 64, 0.8)";
+    // Nuevos colores NEÓN
+    const colorCyan = "rgba(0, 212, 255, 0.7)";
+    const colorPurple = "rgba(124, 58, 237, 0.7)";
+    const colorGreen = "rgba(0, 255, 136, 0.7)";
 
-    // Gráfico 1 - Costo mensual total
-    const ctxMensual = document.getElementById("chartMensual").getContext("2d");
-    new Chart(ctxMensual, {
+    // Gráfico 1 - Mensual
+    new Chart(document.getElementById("chartMensual"), {
       type: "bar",
       data: {
         labels: labels,
         datasets: [{
-          label: "Fee total mensual (USD)",
+          label: "Fee Mensual",
           data: feeTotal,
-          backgroundColor: mainColor
+          backgroundColor: colorGreen,
+          borderRadius: 4
         }]
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `USD ${context.parsed.y}`
-            }
-          }
-        },
-        scales: {
-          x: { ticks: { font: { size: 11 } } },
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: "USD/mes" }
-          }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } }
       }
     });
 
-    // Gráfico 2 - Costo primer mes (fee + set up)
-    const ctxPrimerMes = document.getElementById("chartPrimerMes").getContext("2d");
-    new Chart(ctxPrimerMes, {
+    // Gráfico 2 - Primer Mes
+    new Chart(document.getElementById("chartPrimerMes"), {
       type: "bar",
       data: {
         labels: labels,
         datasets: [{
-          label: "Primer mes (fee + set up) (USD)",
+          label: "Primer Mes (Inversión)",
           data: feeTotalMasSetup,
-          backgroundColor: secondColor
+          backgroundColor: colorPurple,
+          borderRadius: 4
         }]
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (context) => `USD ${context.parsed.y}`
-            }
-          }
-        },
-        scales: {
-          x: { ticks: { font: { size: 11 } } },
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: "USD primer mes" }
-          }
-        }
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } }
       }
     });
 
-    // Gráfico 3 - Fee IA vs Fee sin IA
-    const ctxIaVsSinIa = document.getElementById("chartIaVsSinIa").getContext("2d");
-    new Chart(ctxIaVsSinIa, {
+    // Gráfico 3 - Stacked
+    new Chart(document.getElementById("chartIaVsSinIa"), {
       type: "bar",
       data: {
         labels: labels,
         datasets: [
-          {
-            label: "Fee IA (USD)",
-            data: feeIA,
-            backgroundColor: mainColor
-          },
-          {
-            label: "Fee sin IA (USD)",
-            data: feeSinIA,
-            backgroundColor: thirdColor
-          }
+          { label: "Costo IA", data: feeIA, backgroundColor: colorCyan, borderRadius: 2 },
+          { label: "Costo Plataforma", data: feeSinIA, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 }
         ]
       },
       options: {
         responsive: true,
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: (context) => `USD ${context.parsed.y}`
-            }
-          }
-        },
-        scales: {
-          x: {
-            stacked: false,
-            ticks: { font: { size: 11 } }
-          },
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: "USD/mes" }
-          }
+        scales: { 
+            x: { stacked: true }, 
+            y: { beginAtZero: true, stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } } 
         }
       }
     });
