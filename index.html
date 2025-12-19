@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Competidores: Agentes IA para WhatsApp Business 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #111936;
+            --bg-tertiary: #1a2351;
+            --accent-green: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7c3aed;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --card-hover: rgba(0, 255, 136, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.2rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border-color: var(--accent-green);
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .view-btn {
+            padding: 0.7rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .view-btn.active {
+            background: var(--accent-purple);
+            color: white;
+            border-color: var(--accent-purple);
+        }
+
+        /* Cards Grid */
+        .cards-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .platform-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .platform-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+            background: var(--card-hover);
+            border-color: var(--accent-green);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .platform-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .platform-region {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .badge.easy {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge.medium {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--accent-cyan);
+        }
+
+        .badge.complex {
+            background: rgba(255, 136, 0, 0.15);
+            color: #ff8800;
+        }
+
+        .card-features {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            margin: 1rem 0;
+            flex-grow: 1;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon.yes {
+            color: var(--accent-green);
+        }
+
+        .feature-icon.no {
+            color: #ff4444;
+        }
+
+        .feature-label {
+            color: var(--text-secondary);
+            flex: 1;
+        }
+
+        .card-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .analysis-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-purple);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analysis-btn:hover {
+            background: var(--accent-purple);
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+        }
+
+        .price-tag {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            text-align: right;
+        }
+
+        .price-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-purple);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(to right, rgba(124, 58, 237, 0.1), transparent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ff4444;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-body li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .modal-body li::before {
+            content: '➤';
+            position: absolute;
+            left: 0;
+            color: var(--accent-purple);
+            font-size: 0.8rem;
+            top: 5px;
+        }
+
+        .modal-body strong {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* Table View */
+        .table-view {
+            display: none;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-view.active {
+            display: block;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        tr:hover {
+            background: var(--card-hover);
+        }
+
+        /* Top 3 Section */
+        .top-3-section {
+            margin: 4rem 0;
+            animation: fadeIn 0.8s ease-out 0.4s backwards;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .top-3-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .top-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .top-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .top-card:hover::after {
+            opacity: 1;
+        }
+
+        .top-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .medal {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .medal.gold {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        }
+
+        .medal.silver {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+        }
+
+        .medal.bronze {
+            background: linear-gradient(135deg, #cd7f32 0%, #e9967a 100%);
+        }
+
+        .top-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .top-tagline {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pros-cons {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pros-cons h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-green);
+        }
+
+        .pros-cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pros-cons li {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.3rem;
+        }
+
+        .pros-cons li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* Matrix View - Solo para Análisis de Precios */
+        .matrix-view {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-out 0.6s backwards;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 2rem 1rem; }
+            .controls { flex-direction: column; }
+            .view-toggle { margin-left: 0; }
+            .cards-view { grid-template-columns: 1fr; }
+            .top-3-grid { grid-template-columns: 1fr; }
+            .modal-content { width: 95%; padding: 1rem; }
+            .card-actions { flex-direction: column; gap: 1rem; align-items: stretch; }
+            .price-tag { text-align: left; }
+            .price-label { text-align: left; }
+        }
+
+        .platform-card { animation-delay: calc(var(--index) * 0.05s); }
+    </style>
+</head>
+<body>
+    <div class="noise-bg"></div>
+    
+    <div class="container">
+<nav style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border-color);">
+    <a href="index.html" style="color: var(--accent-cyan); text-decoration: none; font-weight: 600;">🤖 Mapa de Plataformas</a>
+    <a href="precios.html" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-cyan)'" onmouseout="this.style.color='var(--text-secondary)'">💰 Mapa de Precios CRM</a>
+</nav>
+        <header>
+            <h1>Mapa de Competidores 2025</h1>
+            <p class="subtitle">
+                Análisis profundo de plataformas de agentes IA para WhatsApp Business.
+                <br>
+                <span style="color: var(--accent-purple); font-size: 0.9rem;">⭐ Incluye análisis de experiencia de usuario real</span>
+            </p>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar plataforma, característica o país...">
+            </div>
+            
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="easy">Fácil Setup</button>
+                <button class="filter-btn" data-filter="latam">LATAM</button>
+                <button class="filter-btn" data-filter="cheap">Económico</button>
+            </div>
+
+            <div class="view-toggle">
+                <button class="view-btn active" data-view="cards">Cards</button>
+                <button class="view-btn" data-view="table">Tabla</button>
+            </div>
+        </div>
+
+        <div class="cards-view" id="cardsView"></div>
+
+        <div class="table-view" id="tableView">
+            <div class="table-scroll">
+                <table id="comparisonTable"></table>
+            </div>
+        </div>
+
+        <div class="top-3-section">
+            <h2 class="section-title">🏆 Top 3 Recomendadas</h2>
+            
+            <div class="top-3-grid">
+                <div class="top-card">
+                    <div class="medal gold">🥇</div>
+                    <a href="https://manychat.com" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                        <h3 class="top-name" style="transition: color 0.3s ease;"
+                            onmouseover="this.style.color='var(--accent-green)'"
+                            onmouseout="this.style.color='var(--text-primary)'">
+                            Manychat <span style="font-size: 0.8rem; opacity: 0.6;">↗</span>
+                        </h3>
+                    </a>
+                    <p class="top-tagline">Más accesible y fácil de configurar</p>
+                    <div class="card-price">
+                        <div>
+                            <div class="price-tag">$44</div>
+                            <div class="price-label">/mes con IA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="top-card">
+                    <div class="medal silver">🥈</div>
+                    <a href="https://www.cliengo.com" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                        <h3 class="top-name" style="transition: color 0.3s ease;"
+                            onmouseover="this.style.color='var(--accent-green)'"
+                            onmouseout="this.style.color='var(--text-primary)'">
+                            Cliengo <span style="font-size: 0.8rem; opacity: 0.6;">↗</span>
+                        </h3>
+                    </a>
+                    <p class="top-tagline">Mejor opción para LATAM con español nativo</p>
+                    <div class="card-price">
+                        <div>
+                            <div class="price-tag">$119</div>
+                            <div class="price-label">/mes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="top-card">
+                    <div class="medal bronze">🥉</div>
+                    <a href="https://dante-ai.com" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                        <h3 class="top-name" style="transition: color 0.3s ease;"
+                            onmouseover="this.style.color='var(--accent-green)'"
+                            onmouseout="this.style.color='var(--text-primary)'">
+                            DanteAI <span style="font-size: 0.8rem; opacity: 0.6;">↗</span>
+                        </h3>
+                    </a>
+                    <p class="top-tagline">Mejor para escalar: múltiples bots y clientes</p>
+                    <div class="card-price">
+                        <div>
+                            <div class="price-tag">$99</div>
+                            <div class="price-label">/mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="matrix-view" style="margin-top: 4rem;">
+            <h2 class="section-title">💰 Análisis de Precios y Value Score</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">PRECIO PROMEDIO</div>
+                    <div id="avgPrice" style="font-size: 2.5rem; font-weight: 700; color: var(--accent-cyan);"></div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">USD/mes (n=11)</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">MEDIANA</div>
+                    <div id="medianPrice" style="font-size: 2.5rem; font-weight: 700; color: var(--accent-green);"></div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">50% están por debajo</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">DESVIACIÓN ESTÁNDAR</div>
+                    <div id="stdDev" style="font-size: 2.5rem; font-weight: 700; color: var(--accent-purple);"></div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Variabilidad de precios</div>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid var(--border-color);">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">RANGO</div>
+                    <div id="priceRange" style="font-size: 2.5rem; font-weight: 700; color: #ff8800;"></div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">Min - Max</div>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-tertiary); border-radius: 16px; padding: 2rem; border: 1px solid var(--border-color);">
+                <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-cyan);">
+                    📊 Value Score: Features vs Precio
+                </h3>
+                <div id="valueScoreTable"></div>
+            </div>
+        </div>
+
+        <div class="matrix-view" style="margin-top: 4rem;">
+            <h2 class="section-title">📈 Análisis Estadístico del Mercado</h2>
+            <div style="background: var(--bg-tertiary); border-radius: 16px; padding: 3rem 2rem; margin-bottom: 2rem; border: 1px solid var(--border-color); position: relative;">
+                <div style="position: relative; height: 450px; margin-bottom: 2rem;">
+                    <canvas id="boxplotCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="analysisModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Título Plataforma</h3>
+                <button class="modal-close" id="closeModal">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Data updated with user observations
+        const platforms = [
+            {
+                name: 'Manychat',
+                url: 'https://manychat.com',
+                region: '🇺🇸 USA',
+                easySetup: 'easy',
+                connection: 'WhatsApp, IG, Messenger',
+                handoff: true,
+                analytics: 'Básico',
+                integrations: 'Zapier, Shopify, HubSpot',
+                price: '$44',
+                priceNum: 44,
+                notes: 'Con IA ($44/mes), AI Flow Builder',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>Sin RAG:</strong> El agente no utiliza bases de conocimiento externas, funciona mediante instrucciones configuradas en un esquema de nodos.</li>
+                        <li><strong>Configuración Amigable:</strong> El sistema de nodos conectados es muy intuitivo para el usuario.</li>
+                        <li><strong>Integración Directa:</strong> Conexión nativa con API Cloud y permiten coexistencia.</li>
+                        <li><strong>Enfoque:</strong> Aunque ofrecen funciones de CRM, su gran fortaleza es la configuración ágil de bots automatizados.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Botpress',
+                url: 'https://botpress.com',
+                region: '🇨🇦 Canadá',
+                easySetup: 'medium',
+                connection: 'WABA oficial',
+                handoff: true,
+                analytics: 'Avanzado',
+                integrations: 'Zapier, Make, webhooks',
+                price: '$89',
+                priceNum: 89,
+                notes: 'Plus: 2 bots, 5K msgs, Live Handoff',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>RAG Presente pero Limitado:</strong> Posee la función, pero en pruebas de campo la recuperación de conocimiento mostró fallas.</li>
+                        <li><strong>Visual & Potente:</strong> Disparadores drag & drop y esquema de redes de nodos muy visual.</li>
+                        <li><strong>Capacidades Multimodales:</strong> Transcribe audio y genera imágenes nativamente.</li>
+                        <li><strong>Complejidad Alta:</strong> Gran cantidad de elementos personalizables y parámetros pueden abrumar.</li>
+                        <li><strong>Enfoque:</strong> Full destinado a la generación de bots complejos, no funciona como CRM.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'DanteAI',
+                url: 'https://dante-ai.com',
+                region: '🇺🇸 USA',
+                easySetup: 'easy',
+                connection: 'WhatsApp Integration',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'WhatsApp, Custom domains, API',
+                price: '$99',
+                priceNum: 99,
+                notes: '10 bots, 50K responses, 10 seats',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>RAG Efectivo:</strong> Funciona correctamente, permitiendo modificar comportamiento e incluir links como fuente.</li>
+                        <li><strong>UX Excelente:</strong> Interfaz muy pulida con configuración vía red de nodos súper intuitiva.</li>
+                        <li><strong>Setup Guiado:</strong> Cuenta con un asistente que guía la configuración inicial paso a paso.</li>
+                        <li><strong>Multiplataforma:</strong> Incluye WhatsApp y widgets web con facilidad.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Laburen',
+                url: 'https://laburen.com',
+                region: '🌎 Global',
+                easySetup: 'easy',
+                connection: 'WhatsApp',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'Integraciones premium',
+                price: '$99',
+                priceNum: 99,
+                notes: '99 créditos/mes, sistema de créditos confuso',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>Asistente tipo GPT:</strong> Configuración de bots muy fácil guiada por chat, similar a crear un GPT personalizado.</li>
+                        <li><strong>Sin RAG:</strong> No ofrece recuperación de documentos.</li>
+                        <li><strong>Acciones Integradas:</strong> Permite llamadas HTTP y compartir archivos desde la IA.</li>
+                        <li><strong>Limitaciones:</strong> Muy fácil de usar pero poco personalizable.</li>
+                        <li><strong>Pricing Confuso:</strong> Sistema de cobro basado en "créditos" opacos, difícil de calcular equivalencia en conversaciones reales.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Cliengo',
+                url: 'https://www.cliengo.com',
+                region: '🇦🇷 Argentina',
+                easySetup: 'medium',
+                connection: 'API multicanal',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'Zapier, Google Ads, 1300+ apps',
+                price: '$119',
+                priceNum: 119,
+                notes: 'Fuerte en CRM, 3 agentes, 10 bots IA',
+                isLatam: true,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>Enfoque CRM:</strong> Su núcleo es la gestión de clientes, con un tablero tipo Kanban muy robusto.</li>
+                        <li><strong>Estructura Rígida:</strong> Instrucciones y comportamiento poco personalizables (estilo módulos predefinidos).</li>
+                        <li><strong>Sin RAG Documental:</strong> Solo se entrena escaneando el sitio web, no archivos PDF/Doc.</li>
+                        <li><strong>Conexiones:</strong> Buenas integraciones vía API y QR.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'YourGPT',
+                url: 'https://yourgpt.ai',
+                region: '🇺🇸 USA',
+                easySetup: 'easy',
+                connection: 'WABA oficial',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'Webhooks, API',
+                price: '$129',
+                priceNum: 129,
+                notes: '5 bots, GPT-4, Developer oriented',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>RAG Avanzado:</strong> Soporta documentos, links y múltiples fuentes de información.</li>
+                        <li><strong>Developer First:</strong> Súper configurable con multitud de parámetros. Puede resultar complejo para usuarios no técnicos.</li>
+                        <li><strong>Copilot Studio:</strong> Estudio visual de nodos donde un Copilot puede crear flujos basados en prompts.</li>
+                        <li><strong>Control Fino:</strong> Incluye configuración de retraso en mensajes medido en milisegundos.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Chatbase',
+                url: 'https://www.chatbase.co',
+                region: '🇺🇸 USA',
+                easySetup: 'easy',
+                connection: 'Cloud API oficial',
+                handoff: false,
+                analytics: 'Medio',
+                integrations: 'Zapier, Make, n8n',
+                price: '$150',
+                priceNum: 150,
+                notes: 'Multi-modelo, Prompt único',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>Bot Puro:</strong> Orientado 100% a la IA, no posee funciones de CRM.</li>
+                        <li><strong>RAG Versátil:</strong> Acepta archivos, texto plano y sitios web.</li>
+                        <li><strong>Prompting Modular:</strong> Las instrucciones se cargan en un solo bloque de texto.</li>
+                        <li><strong>Multi-Modelo:</strong> Permite elegir y comparar entre diferentes modelos de IA (GPT, Claude, etc) en tiempo real.</li>
+                        <li><strong>UI:</strong> Interfaz muy limpia y estética.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Chatfuel',
+                url: 'https://chatfuel.com',
+                region: '🇺🇸 USA',
+                easySetup: 'easy',
+                connection: 'BSP oficial Meta',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'Zapier, Sheets, Shopify',
+                price: '$180',
+                priceNum: 180,
+                notes: 'GPT-5.1, Buffering de mensajes',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>Sin RAG:</strong> No utiliza bases de conocimiento documentales.</li>
+                        <li><strong>Personalización de Comportamiento:</strong> Gran control sobre longitud de respuesta y uso de emojis.</li>
+                        <li><strong>Message Buffering:</strong> Posee "retraso inteligente" para recopilar varios mensajes del usuario antes de responder, evitando respuestas fragmentadas.</li>
+                        <li><strong>Multimedia:</strong> Capacidad para enviar imágenes.</li>
+                        <li><strong>Instrucciones:</strong> Caja de texto única, no modular.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Landbot',
+                url: 'https://landbot.io',
+                region: '🇪🇸 España',
+                easySetup: 'easy',
+                connection: 'API oficial',
+                handoff: true,
+                analytics: 'Avanzado',
+                integrations: 'Zapier, Make, Sheets, Slack',
+                price: '$220',
+                priceNum: 220,
+                notes: 'Visual builder, 3 seats, Testeo en vivo',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>RAG Híbrido:</strong> Funciona con links o archivos cargados.</li>
+                        <li><strong>Data Persistence:</strong> Puede almacenar información generada durante la conversación en variables.</li>
+                        <li><strong>UI Elements:</strong> La IA es capaz de enviar botones, no solo texto.</li>
+                        <li><strong>Prompting:</strong> Instrucciones en bloque único con generador asistido por IA.</li>
+                        <li><strong>Testing Innovador:</strong> Permite probar el bot enviando una interacción real a tu WhatsApp personal.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Tidio',
+                url: 'https://www.tidio.com',
+                region: '🇵🇱 Polonia',
+                easySetup: 'easy',
+                connection: 'WhatsApp + Multi-canal',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'Shopify, WordPress, Zapier',
+                price: '$550',
+                priceNum: 550,
+                notes: 'Lyro AI, Integración E-commerce profunda',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>RAG & E-commerce:</strong> RAG vía web/CSV/texto, pero destaca por integración directa con listas de productos (Shopify/API).</li>
+                        <li><strong>Comportamiento Configurable:</strong> Ajuste fino de tono, emojis, estilo de comunicación y escalación a humanos.</li>
+                        <li><strong>Aprendizaje:</strong> Sistema de "sugerencias" que permite a la IA aprender sobre la marcha.</li>
+                        <li><strong>Híbrido:</strong> Posee bandeja de entrada (Inbox/CRM) pero con una orientación muy fuerte a la automatización de bots.</li>
+                    </ul>
+                `
+            }
+        ];
+
+        // Render Cards with Analysis Button
+        function renderCards(filteredPlatforms) {
+            const cardsView = document.getElementById('cardsView');
+            cardsView.innerHTML = filteredPlatforms.map((platform, index) => `
+                <div class="platform-card" style="--index: ${index}">
+                    <div class="card-header">
+                        <div>
+                            <a href="${platform.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                                <div class="platform-name" style="color: var(--text-primary); transition: color 0.3s ease;"
+                                     onmouseover="this.style.color='var(--accent-green)'"
+                                     onmouseout="this.style.color='var(--text-primary)'">
+                                    ${platform.name} <span style="font-size: 0.8rem; opacity: 0.6;">↗</span>
+                                </div>
+                            </a>
+                            <div class="platform-region">${platform.region}</div>
+                        </div>
+                        <div class="badge ${platform.easySetup}">
+                            ${platform.easySetup === 'easy' ? '✓ Fácil' : '⚡ Medio'}
+                        </div>
+                    </div>
+                    
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <span class="feature-icon yes">✓</span>
+                            <span class="feature-label">${platform.connection}</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon ${platform.handoff ? 'yes' : 'no'}">
+                                ${platform.handoff ? '✓' : '✗'}
+                            </span>
+                            <span class="feature-label">Hand-off humano</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon yes">📊</span>
+                            <span class="feature-label">Analytics: ${platform.analytics}</span>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.5rem 0;">
+                        ${platform.notes}
+                    </div>
+
+                    <div class="card-actions">
+                        ${platform.userAnalysis ? 
+                            `<button class="analysis-btn" onclick="openModal(${index})">
+                                📝 Ver Análisis
+                            </button>` : '<div></div>'
+                        }
+                        <div>
+                            <div class="price-tag">${platform.price}</div>
+                            <div class="price-label">/mes</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Table
+        function renderTable(filteredPlatforms) {
+            const table = document.getElementById('comparisonTable');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Plataforma</th>
+                        <th>País/Región</th>
+                        <th>Setup</th>
+                        <th>Conexión</th>
+                        <th>Hand-off</th>
+                        <th>Analytics</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredPlatforms.map(platform => `
+                        <tr>
+                            <td>
+                                <a href="${platform.url}" target="_blank" rel="noopener noreferrer" 
+                                   style="color: var(--text-primary); text-decoration: none; font-weight: 600; transition: color 0.3s ease;"
+                                   onmouseover="this.style.color='var(--accent-green)'"
+                                   onmouseout="this.style.color='var(--text-primary)'">
+                                    ${platform.name} ↗
+                                </a>
+                            </td>
+                            <td>${platform.region}</td>
+                            <td>${platform.easySetup === 'easy' ? '✓ Fácil' : '⚡ Medio'}</td>
+                            <td>${platform.connection}</td>
+                            <td>${platform.handoff ? '✓' : '✗'}</td>
+                            <td>${platform.analytics}</td>
+                            <td><strong>${platform.price}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        // Filter & Search
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        function applyFilters() {
+            let filtered = platforms;
+
+            if (currentFilter === 'easy') {
+                filtered = filtered.filter(p => p.easySetup === 'easy');
+            } else if (currentFilter === 'latam') {
+                filtered = filtered.filter(p => p.isLatam);
+            } else if (currentFilter === 'cheap') {
+                filtered = filtered.filter(p => p.priceNum < 50);
+            }
+
+            if (currentSearch) {
+                const search = currentSearch.toLowerCase();
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(search) ||
+                    p.region.toLowerCase().includes(search) ||
+                    p.notes.toLowerCase().includes(search) ||
+                    p.connection.toLowerCase().includes(search)
+                );
+            }
+
+            // Keep correct index for modal mapping
+            const mappedFiltered = filtered.map(p => {
+                const originalIndex = platforms.findIndex(orig => orig.name === p.name);
+                return { ...p, originalIndex };
+            });
+
+            // Update render call to use original index
+            const cardsView = document.getElementById('cardsView');
+            cardsView.innerHTML = mappedFiltered.map(platform => `
+                <div class="platform-card" style="--index: ${platform.originalIndex}">
+                    <div class="card-header">
+                        <div>
+                            <a href="${platform.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                                <div class="platform-name" style="color: var(--text-primary); transition: color 0.3s ease;"
+                                     onmouseover="this.style.color='var(--accent-green)'"
+                                     onmouseout="this.style.color='var(--text-primary)'">
+                                    ${platform.name} <span style="font-size: 0.8rem; opacity: 0.6;">↗</span>
+                                </div>
+                            </a>
+                            <div class="platform-region">${platform.region}</div>
+                        </div>
+                        <div class="badge ${platform.easySetup}">
+                            ${platform.easySetup === 'easy' ? '✓ Fácil' : '⚡ Medio'}
+                        </div>
+                    </div>
+                    
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <span class="feature-icon yes">✓</span>
+                            <span class="feature-label">${platform.connection}</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon ${platform.handoff ? 'yes' : 'no'}">
+                                ${platform.handoff ? '✓' : '✗'}
+                            </span>
+                            <span class="feature-label">Hand-off humano</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon yes">📊</span>
+                            <span class="feature-label">Analytics: ${platform.analytics}</span>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.5rem 0;">
+                        ${platform.notes}
+                    </div>
+
+                    <div class="card-actions">
+                        ${platform.userAnalysis ? 
+                            `<button class="analysis-btn" onclick="openModal(${platform.originalIndex})">
+                                📝 Ver Análisis
+                            </button>` : '<div></div>'
+                        }
+                        <div>
+                            <div class="price-tag">${platform.price}</div>
+                            <div class="price-label">/mes</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            renderTable(filtered);
+        }
+
+        // Modal Logic
+        const modal = document.getElementById('analysisModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+        const closeModal = document.getElementById('closeModal');
+
+        function openModal(index) {
+            const platform = platforms[index];
+            modalTitle.textContent = `Análisis de ${platform.name}`;
+            modalBody.innerHTML = platform.userAnalysis;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Escape key close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Event Listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            applyFilters();
+        });
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const view = btn.dataset.view;
+                if (view === 'cards') {
+                    document.getElementById('cardsView').style.display = 'grid';
+                    document.getElementById('tableView').classList.remove('active');
+                } else {
+                    document.getElementById('cardsView').style.display = 'none';
+                    document.getElementById('tableView').classList.add('active');
+                }
+            });
+        });
+
+        // Price Analysis & Value Score
+        function calculatePriceStats() {
+            const priceablePlatforms = platforms.filter(p => p.priceNum < 600);
+            const prices = priceablePlatforms.map(p => p.priceNum);
+            
+            const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+            const sorted = [...prices].sort((a, b) => a - b);
+            const median = sorted.length % 2 === 0 
+                ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+                : sorted[Math.floor(sorted.length / 2)];
+            
+            const variance = prices.reduce((sum, price) => sum + Math.pow(price - avg, 2), 0) / prices.length;
+            const stdDev = Math.sqrt(variance);
+            
+            const min = Math.min(...prices);
+            const max = Math.max(...prices);
+            
+            document.getElementById('avgPrice').textContent = `$${avg.toFixed(0)}`;
+            document.getElementById('medianPrice').textContent = `$${median.toFixed(0)}`;
+            document.getElementById('stdDev').textContent = `±$${stdDev.toFixed(0)}`;
+            document.getElementById('priceRange').textContent = `$${min}-$${max}`;
+            
+            return { avg, median, stdDev, min, max };
+        }
+
+        function calculateValueScore() {
+            const priceablePlatforms = platforms.filter(p => p.priceNum < 600);
+            const maxPrice = Math.max(...priceablePlatforms.map(p => p.priceNum));
+            
+            const scored = priceablePlatforms.map(platform => {
+                const setupScore = platform.easySetup === 'easy' ? 3 : 1.5;
+                const handoffScore = platform.handoff ? 2.5 : 0;
+                const analyticsScore = platform.analytics === 'Avanzado' ? 2 : 
+                                      platform.analytics === 'Medio' ? 1 : 0.5;
+                
+                const featureTotal = setupScore + handoffScore + analyticsScore;
+                const priceNormalized = (maxPrice - platform.priceNum) / maxPrice;
+                const valueScore = (featureTotal * (1 + priceNormalized * 2)) / 3;
+                
+                return {
+                    name: platform.name,
+                    url: platform.url,
+                    price: platform.price,
+                    priceNum: platform.priceNum,
+                    featureTotal: featureTotal.toFixed(1),
+                    valueScore: valueScore.toFixed(2),
+                    region: platform.region
+                };
+            }).sort((a, b) => b.valueScore - a.valueScore);
+            
+            const tableHTML = `
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
+                        <thead style="background: var(--bg-secondary);">
+                            <tr>
+                                <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--border-color); color: var(--accent-green);">Rank</th>
+                                <th style="padding: 1rem; text-align: left; border-bottom: 2px solid var(--border-color); color: var(--accent-green);">Plataforma</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 2px solid var(--border-color); color: var(--accent-green);">Precio</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 2px solid var(--border-color); color: var(--accent-green);">Features Score</th>
+                                <th style="padding: 1rem; text-align: center; border-bottom: 2px solid var(--border-color); color: var(--accent-green);">Value Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${scored.map((item, index) => {
+                                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+                                const scoreColor = item.valueScore > 4 ? 'var(--accent-green)' : 
+                                                 item.valueScore > 3 ? 'var(--accent-cyan)' : 
+                                                 'var(--text-secondary)';
+                                
+                                return `
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; font-weight: 700;">${medal}</td>
+                                        <td style="padding: 1rem;">
+                                            <a href="${item.url}" target="_blank" style="color: var(--text-primary); text-decoration: none;">${item.name}</a>
+                                        </td>
+                                        <td style="padding: 1rem; text-align: center; font-family: 'JetBrains Mono';">${item.price}</td>
+                                        <td style="padding: 1rem; text-align: center; color: var(--accent-cyan);">${item.featureTotal}</td>
+                                        <td style="padding: 1rem; text-align: center; font-weight: 700; color: ${scoreColor}; font-size: 1.1rem;">${item.valueScore}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('valueScoreTable').innerHTML = tableHTML;
+        }
+
+        // Statistical Boxplot
+        function createStatisticalAnalysis() {
+            const allPlatforms = [
+                { name: 'AIsensy Basic', price: 12 }, { name: 'AIsensy Pro', price: 29 },
+                { name: 'Manychat', price: 44 }, { name: 'Botpress', price: 89 },
+                { name: 'DanteAI', price: 99 }, { name: 'Laburen', price: 99 },
+                { name: 'Cliengo', price: 119 }, { name: 'YourGPT', price: 129 },
+                { name: 'Chatbase', price: 150 }, { name: 'Chatfuel', price: 180 },
+                { name: 'Landbot', price: 220 }, { name: 'Tidio', price: 550 }
+            ];
+
+            const prices = allPlatforms.map(p => p.price).sort((a, b) => a - b);
+            const n = prices.length;
+            const min = prices[0];
+            const max = prices[n - 1];
+            const q1 = prices[Math.floor(n * 0.25)];
+            const median = (prices[n / 2 - 1] + prices[n / 2]) / 2;
+            const q3 = prices[Math.floor(n * 0.75)];
+            const mean = prices.reduce((a, b) => a + b, 0) / n;
+
+            const canvas = document.getElementById('boxplotCanvas');
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = 450 * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = '450px';
+            ctx.scale(dpr, dpr);
+
+            const width = rect.width;
+            const height = 450;
+            const padding = 50;
+            const plotWidth = width - padding * 2;
+            const centerY = height / 2;
+            const xScale = (val) => padding + ((val - min) / (max - min)) * plotWidth;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw Axis
+            ctx.strokeStyle = '#2d3748';
+            ctx.beginPath();
+            ctx.moveTo(padding, centerY + 50);
+            ctx.lineTo(width - padding, centerY + 50);
+            ctx.stroke();
+
+            // Draw Whiskers & Box
+            ctx.strokeStyle = '#00d4ff';
+            ctx.lineWidth = 2;
+            
+            // Whiskers
+            ctx.beginPath(); ctx.moveTo(xScale(min), centerY - 20); ctx.lineTo(xScale(min), centerY + 20); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xScale(max), centerY - 20); ctx.lineTo(xScale(max), centerY + 20); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xScale(min), centerY); ctx.lineTo(xScale(q1), centerY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(xScale(q3), centerY); ctx.lineTo(xScale(max), centerY); ctx.stroke();
+
+            // Box
+            ctx.fillStyle = 'rgba(0, 255, 136, 0.1)';
+            ctx.fillRect(xScale(q1), centerY - 40, xScale(q3) - xScale(q1), 80);
+            ctx.strokeRect(xScale(q1), centerY - 40, xScale(q3) - xScale(q1), 80);
+
+            // Median
+            ctx.strokeStyle = '#00ff88';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(xScale(median), centerY - 40); ctx.lineTo(xScale(median), centerY + 40); ctx.stroke();
+
+            // Mean
+            ctx.strokeStyle = '#ff8800';
+            ctx.beginPath(); ctx.arc(xScale(mean), centerY, 5, 0, Math.PI*2); ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '12px JetBrains Mono';
+            ctx.textAlign = 'center';
+            [min, q1, median, q3, max].forEach(val => {
+                ctx.fillText(`$${val}`, xScale(val), centerY + 70);
+            });
+            
+            ctx.textAlign = 'left';
+            ctx.fillText('Boxplot Distribución de Precios', padding, 30);
+            ctx.fillStyle = '#00ff88';
+            ctx.textAlign = 'right';
+            ctx.fillText('█ Mediana', width - padding, 30);
+        }
+
+        // Init
+        applyFilters();
+        calculatePriceStats();
+        calculateValueScore();
+        createStatisticalAnalysis();
+        window.addEventListener('resize', createStatisticalAnalysis);
+
+    </script>
+</body>
+</html>
