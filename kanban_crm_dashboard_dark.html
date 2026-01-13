@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM WhatsApp con Tableros Kanban - Análisis 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #111936;
+            --bg-tertiary: #1a2351;
+            --accent-green: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7c3aed;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --card-hover: rgba(0, 255, 136, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            max-width: 800px;
+            margin: 0 auto 1rem auto;
+            line-height: 1.7;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 0.7rem 1.2rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: var(--bg-primary);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .tab.active {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            border-color: var(--accent-green);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .card h3 a:hover {
+            color: var(--accent-green) !important;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            margin: 1rem 0;
+        }
+
+        .price-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .feature-box {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .feature-box strong {
+            display: block;
+            color: var(--accent-cyan);
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .feature-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .feature-row > div {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .feature-row .value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .feature-row .value.positive {
+            color: var(--accent-green);
+        }
+
+        .feature-row .value.warning {
+            color: #ff8800;
+        }
+
+        .feature-row .value.negative {
+            color: #ff4444;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            color: var(--accent-green);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .feature-list li.negative {
+            color: #ff4444;
+        }
+
+        .feature-list li.negative::before {
+            content: '✗';
+            color: #ff4444;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tag.highlight {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .tag.warning {
+            background: rgba(255, 136, 0, 0.1);
+            border-color: #ff8800;
+            color: #ff8800;
+        }
+
+        /* TOP 3 Section */
+        .top3-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .top3-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top3-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .top3-card.gold::before {
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+        }
+
+        .top3-card.silver::before {
+            background: linear-gradient(90deg, #c0c0c0, #e8e8e8);
+        }
+
+        .top3-card.bronze::before {
+            background: linear-gradient(90deg, #cd7f32, #e8a87c);
+        }
+
+        .medal {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            color: var(--accent-green);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: var(--card-hover);
+        }
+
+        .checkmark {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .crossmark {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-container h3 {
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 2rem 0 1.5rem 0;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        /* Legend */
+        .legend {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .legend h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .info-box strong {
+            color: var(--accent-cyan);
+        }
+
+        .info-box p {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+            line-height: 1.7;
+        }
+
+        .info-box ul {
+            margin: 0.75rem 0 0 1.5rem;
+        }
+
+        .info-box li {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .footer h3 {
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-bg"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🎯 CRM WhatsApp + Tableros Kanban</h1>
+            <p class="subtitle">Análisis exhaustivo de 9 plataformas CRM con vista Kanban nativa para gestión de WhatsApp Business. Todas las plataformas fueron probadas personalmente, verificando features reales, precios y funcionalidades.</p>
+            <div style="margin-top: 1rem;">
+                <span class="badge">✓ 100% Verificado</span>
+                <span class="badge">9 Plataformas</span>
+                <span class="badge">Enero 2026</span>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('cards')">📊 Cards</button>
+            <button class="tab" onclick="showTab('table')">📋 Tabla</button>
+            <button class="tab" onclick="showTab('chart')">📈 Precios</button>
+            <button class="tab" onclick="showTab('top3')">⭐ TOP 3</button>
+        </div>
+
+        <!-- Cards View -->
+        <div id="cards" class="tab-content active">
+            <h2 class="section-title">Plataformas Analizadas</h2>
+            
+            <div class="cards-grid">
+                <!-- Bitrix24 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://www.bitrix24.com" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Bitrix24 →</a></h3>
+                        <span class="tag highlight">🏆 #1 RECOMENDADO</span>
+                    </div>
+                    <div class="price">$50<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">5 usuarios incluidos ($10/usuario)</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value positive">Muy customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value positive">Muy automatizable</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Excelente tablero, hiper personalizables y lleno de funcionalidades de automatización</li>
+                        <li>Muy completo totalmente dedicado a ventas pero al ser tan personalizable se puede aplicar a todo</li>
+                        <li>Tiene módulos de integración con otras aplicaciones</li>
+                        <li>El plan más básico de 50 usd incluye la mayoría de las funcionalidades mencionadas</li>
+                    </ul>
+                </div>
+
+                <!-- Kommo -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://www.kommo.com" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Kommo →</a></h3>
+                        <span class="tag highlight">🥈 #2 RECOMENDADO</span>
+                    </div>
+                    <div class="price">$25<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">Por licencia</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value positive">Muy customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value positive">Sí - incluidas</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Plan de tablero con automatizaciones 25 usd</li>
+                        <li>Múltiple embudo personalizable con automatizaciones</li>
+                    </ul>
+                </div>
+
+                <!-- Brevo -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://www.brevo.com" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Brevo →</a></h3>
+                        <span class="tag highlight">🥉 #3 RECOMENDADO</span>
+                    </div>
+                    <div class="price">$49<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">$31 + $18 WhatsApp</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí (Deals)</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value positive">Muy customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value positive">Sí - incluidas</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Múltiples Tableros customizables con automatizaciones</li>
+                        <li>31 usd + 18 usd para vinculación con whatsapp</li>
+                        <li>Estos tableros los llaman "Deals"</li>
+                    </ul>
+                </div>
+
+                <!-- Freshworks -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://www.freshworks.com/crm/" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Freshworks →</a></h3>
+                    </div>
+                    <div class="price">$39<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">Por usuario</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value positive">Muy customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value negative">No</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Ofrece la posibilidad de editar los campos del tablero</li>
+                        <li>Crear múltiples tableros pero sin automatizaciones</li>
+                        <li>En el plan de 39 usd</li>
+                    </ul>
+                </div>
+
+                <!-- NetHunt -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://nethunt.com" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">NetHunt CRM →</a></h3>
+                    </div>
+                    <div class="price">$42<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">Por usuario</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value warning">Poco customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value negative">No</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Tablero orientado a ventas, personalizable pero de bajo nivel</li>
+                        <li>Solo se puede cambiar los nombres de los campos pero no se puede crear ni sacar campos</li>
+                        <li>Tampoco tiene automatización</li>
+                        <li>Sí se puede crear múltiples tableros</li>
+                        <li>El plan que incluye esta funcionalidad cuesta 42 usd</li>
+                    </ul>
+                </div>
+
+                <!-- JivoChat -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://www.jivochat.com" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">JivoChat →</a></h3>
+                    </div>
+                    <div class="price">$42<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">Por agente</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value warning">Básico</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value warning">Poco customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value negative">No</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Ofrece un tablet de ventas sencillo, poco personalizable</li>
+                        <li>Solo se puede editar los nombres de las etiquetas</li>
+                        <li>No puedo agregar ni quitar campos</li>
+                        <li>No tengo automatizaciones</li>
+                        <li>El plan cuesta 42 usd</li>
+                    </ul>
+                </div>
+
+                <!-- Interakt -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://www.interakt.shop" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Interakt →</a></h3>
+                    </div>
+                    <div class="price">$49<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">5 agentes incluidos</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value negative">No (solo 1)</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value negative">No customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value negative">No</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>El kanban es full orientado para ventas</li>
+                        <li>Es decir para calificar leads y armar un embudo de ventas</li>
+                        <li>El precio es de 49 usd</li>
+                        <li>Un solo tablet no customizable sin automatizaciones</li>
+                    </ul>
+                </div>
+
+                <!-- Cliently -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://clientify.com" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Cliently →</a></h3>
+                    </div>
+                    <div class="price">$77<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">1 usuario</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value positive">Muy customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value warning">Poco (recordatorios)</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>El paquete más básico incluye 1000 contactos, un solo usuario y gestión de roles de usuarios</li>
+                        <li>Cuesta 77 usd por mes</li>
+                        <li>Múltiple tablero personalizable</li>
+                        <li>Tiene funcionalidad de automatización pero solo de recordatorios</li>
+                    </ul>
+                </div>
+
+                <!-- Leadsales -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><a href="https://leadsales.io" target="_blank" style="color: var(--text-primary); text-decoration: none; transition: color 0.3s ease;">Leadsales →</a></h3>
+                    </div>
+                    <div class="price">$133<span style="font-size: 1rem; color: var(--text-secondary);">/mes</span></div>
+                    <div class="price-detail">4 usuarios incluidos</div>
+                    
+                    <div class="feature-box">
+                        <strong>Features Esenciales:</strong>
+                        <div class="feature-row">
+                            <div>📋 <strong>Múltiples tableros:</strong> <span class="value positive">✓ Sí</span></div>
+                            <div>🎨 <strong>Customización:</strong> <span class="value positive">Muy customizable</span></div>
+                            <div>⚙️ <strong>Automatizaciones:</strong> <span class="value negative">No</span></div>
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-list">
+                        <li>Plan de CRM con embudo y integración cloud api 133 usd</li>
+                        <li>Múltiple tablero personalizable</li>
+                        <li>Sin automatizaciones</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div id="table" class="tab-content">
+            <h2 class="section-title">Tabla Comparativa</h2>
+            
+            <div class="legend">
+                <h4>Leyenda</h4>
+                <div class="legend-item">
+                    <span class="checkmark">✓</span> Feature disponible
+                </div>
+                <div class="legend-item">
+                    <span class="crossmark">✗</span> Feature no disponible
+                </div>
+                <div class="legend-item">
+                    <span>~</span> Feature limitada
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Precio/mes</th>
+                            <th>Usuarios</th>
+                            <th>Múltiples Tableros</th>
+                            <th>Customización</th>
+                            <th>Automatizaciones</th>
+                            <th>Español</th>
+                            <th>Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: rgba(255, 215, 0, 0.05);">
+                            <td><strong>Bitrix24</strong></td>
+                            <td><strong>$50</strong></td>
+                            <td>5 incluidos</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>🏆 #1</td>
+                        </tr>
+                        <tr style="background: rgba(192, 192, 192, 0.05);">
+                            <td><strong>Kommo</strong></td>
+                            <td><strong>$25</strong></td>
+                            <td>Por licencia</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>🥈 #2</td>
+                        </tr>
+                        <tr style="background: rgba(205, 127, 50, 0.05);">
+                            <td><strong>Brevo</strong></td>
+                            <td><strong>$49</strong></td>
+                            <td>Por usuario</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>🥉 #3</td>
+                        </tr>
+                        <tr>
+                            <td>Freshworks</td>
+                            <td>$39</td>
+                            <td>Por usuario</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="crossmark">✗</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>NetHunt</td>
+                            <td>$42</td>
+                            <td>Por usuario</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td>~ Poco</td>
+                            <td><span class="crossmark">✗</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>JivoChat</td>
+                            <td>$42</td>
+                            <td>Por agente</td>
+                            <td>~ Básico</td>
+                            <td>~ Poco</td>
+                            <td><span class="crossmark">✗</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Interakt</td>
+                            <td>$49</td>
+                            <td>5 agentes</td>
+                            <td><span class="crossmark">✗</span> Solo 1</td>
+                            <td><span class="crossmark">✗</span> No</td>
+                            <td><span class="crossmark">✗</span></td>
+                            <td><span class="crossmark">✗</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Cliently</td>
+                            <td>$77</td>
+                            <td>1 usuario</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td>~ Poco</td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Leadsales</td>
+                            <td>$133</td>
+                            <td>4 usuarios</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="crossmark">✗</span></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chart View -->
+        <div id="chart" class="tab-content">
+            <h2 class="section-title">Análisis de Precios</h2>
+            
+            <div class="chart-container">
+                <div id="priceChart"></div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Distribución de Precios</h3>
+                <div id="priceDistribution"></div>
+            </div>
+
+            <div class="info-box">
+                <strong>Insights del Análisis:</strong>
+                <p>→ Precio promedio: <strong>$56.44 USD/mes</strong> por usuario</p>
+                <p>→ Rango: <strong>$25 - $133 USD/mes</strong></p>
+                <p>→ Mejor precio con automatizaciones: <strong>Kommo ($25/mes)</strong> y <strong>Brevo ($49/mes)</strong></p>
+                <p>→ Mejor relación calidad-precio: <strong>Bitrix24 ($50/mes con 5 usuarios = $10/usuario)</strong></p>
+            </div>
+        </div>
+
+        <!-- TOP 3 View -->
+        <div id="top3" class="tab-content">
+            <h2 class="section-title">🏆 TOP 3 Recomendados</h2>
+            
+            <div class="top3-grid">
+                <!-- #1 Bitrix24 -->
+                <div class="top3-card gold">
+                    <div class="medal">🥇</div>
+                    <h3>Bitrix24</h3>
+                    <div class="price">$50/mes</div>
+                    <div class="price-detail">5 usuarios ($10/usuario)</div>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--accent-cyan);">¿Por qué #1?</h4>
+                    <ul class="feature-list">
+                        <li><strong>Hiper personalizables:</strong> Crear/editar/eliminar campos completamente</li>
+                        <li><strong>Automatizaciones avanzadas:</strong> Sistema completo por cambio de etapa</li>
+                        <li><strong>Mejor precio/usuario:</strong> $10 efectivo por usuario</li>
+                        <li><strong>Muy completo:</strong> Adaptable a cualquier proceso</li>
+                    </ul>
+                    
+                    <div class="info-box" style="margin-top: 1.5rem;">
+                        <strong>Ideal para:</strong>
+                        <p>Empresas con equipos de 2-5 personas que buscan la solución más completa con automatizaciones avanzadas.</p>
+                    </div>
+                </div>
+
+                <!-- #2 Kommo -->
+                <div class="top3-card silver">
+                    <div class="medal">🥈</div>
+                    <h3>Kommo</h3>
+                    <div class="price">$25/mes</div>
+                    <div class="price-detail">Por licencia</div>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--accent-cyan);">¿Por qué #2?</h4>
+                    <ul class="feature-list">
+                        <li><strong>Mejor precio individual:</strong> Solo $25/mes con todo</li>
+                        <li><strong>Múltiples embudos:</strong> Completamente configurables</li>
+                        <li><strong>Automatizaciones incluidas:</strong> Por cambio de etapa</li>
+                        <li><strong>WhatsApp nativo:</strong> BSP oficial + Cloud API</li>
+                        <li><strong>Kommo IA:</strong> Asistente incluido</li>
+                    </ul>
+                    
+                    <div class="info-box" style="margin-top: 1.5rem;">
+                        <strong>Ideal para:</strong>
+                        <p>Pequeñas empresas o individuales que buscan el mejor precio con automatizaciones. Perfecto para LATAM.</p>
+                    </div>
+                </div>
+
+                <!-- #3 Brevo -->
+                <div class="top3-card bronze">
+                    <div class="medal">🥉</div>
+                    <h3>Brevo</h3>
+                    <div class="price">$49/mes</div>
+                    <div class="price-detail">$31 + $18 WhatsApp</div>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--accent-cyan);">¿Por qué #3?</h4>
+                    <ul class="feature-list">
+                        <li><strong>Deals ilimitados:</strong> Sin restricciones de pipelines</li>
+                        <li><strong>Automatizaciones incluidas:</strong> Sales automation completo</li>
+                        <li><strong>Precio competitivo:</strong> $49/mes total con WhatsApp</li>
+                        <li><strong>Muy customizable:</strong> Campos y etapas configurables</li>
+                    </ul>
+                    
+                    <div class="info-box" style="margin-top: 1.5rem;">
+                        <strong>Ideal para:</strong>
+                        <p>Pequeñas empresas que necesitan CRM completo con automatizaciones a precio accesible.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparative Table -->
+            <div class="table-container" style="margin-top: 3rem;">
+                <h3 style="margin-bottom: 1.5rem; color: var(--accent-cyan);">Comparativa Directa TOP 3</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Criterio</th>
+                            <th>🥇 Bitrix24</th>
+                            <th>🥈 Kommo</th>
+                            <th>🥉 Brevo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Precio/mes</strong></td>
+                            <td>$50 (5 usuarios)</td>
+                            <td>$25 (1 licencia)</td>
+                            <td>$49 (1 usuario)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precio/usuario</strong></td>
+                            <td>$10</td>
+                            <td>$25</td>
+                            <td>$49</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Múltiples tableros</strong></td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Customización</strong></td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Automatizaciones</strong></td>
+                            <td><span class="checkmark">✓</span> Muy</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                            <td><span class="checkmark">✓</span> Sí</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Español</strong></td>
+                            <td><span class="checkmark">✓</span></td>
+                            <td><span class="checkmark">✓</span> LATAM</td>
+                            <td><span class="checkmark">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mejor para</strong></td>
+                            <td>Equipos 2-5 personas</td>
+                            <td>Individuales/pequeños</td>
+                            <td>Pequeñas empresas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h3>Metodología</h3>
+            <p style="color: var(--text-secondary);">✓ Todas las plataformas probadas personalmente</p>
+            <p style="color: var(--text-secondary);">✓ Precios verificados desde páginas oficiales</p>
+            <p style="color: var(--text-secondary);">✓ Features confirmadas en uso real</p>
+            <p style="margin-top: 1rem; font-family: 'JetBrains Mono', monospace; color: var(--text-secondary);">
+                Fecha: Enero 2026 | Plataformas: 9/9 verificadas
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'chart') {
+                createCharts();
+            }
+        }
+
+        // Create charts
+        function createCharts() {
+            const platforms = ['Kommo', 'Freshworks', 'NetHunt', 'JivoChat', 'Brevo', 'Interakt', 'Bitrix24', 'Cliently', 'Leadsales'];
+            const prices = [25, 39, 42, 42, 49, 49, 50, 77, 133];
+            const colors = platforms.map(p => {
+                if (p === 'Bitrix24') return '#ffd700';
+                if (p === 'Kommo') return '#c0c0c0';
+                if (p === 'Brevo') return '#cd7f32';
+                return '#00d4ff';
+            });
+
+            const trace1 = {
+                x: platforms,
+                y: prices,
+                type: 'bar',
+                marker: {
+                    color: colors,
+                    line: { color: '#00ff88', width: 1 }
+                },
+                text: prices.map(p => '$' + p),
+                textposition: 'outside',
+                textfont: { size: 12, color: '#ffffff', family: 'JetBrains Mono' }
+            };
+
+            const layout1 = {
+                title: { text: 'Comparación de Precios por Usuario', font: { size: 18, color: '#00ff88', family: 'Sora' }},
+                xaxis: { title: 'Plataforma', tickangle: -45, color: '#94a3b8' },
+                yaxis: { title: 'Precio USD/mes', range: [0, 150], color: '#94a3b8' },
+                plot_bgcolor: '#111936',
+                paper_bgcolor: '#111936',
+                font: { color: '#94a3b8' },
+                margin: { b: 120, t: 80 },
+                height: 500
+            };
+
+            Plotly.newPlot('priceChart', [trace1], layout1, {responsive: true});
+
+            // Box plot
+            const trace2 = {
+                y: prices,
+                type: 'box',
+                name: 'Distribución',
+                marker: { color: '#00d4ff' },
+                boxmean: 'sd'
+            };
+
+            const layout2 = {
+                yaxis: { title: 'Precio USD/mes', range: [0, 150], color: '#94a3b8' },
+                plot_bgcolor: '#111936',
+                paper_bgcolor: '#111936',
+                font: { color: '#94a3b8', family: 'Sora' },
+                height: 400,
+                annotations: [{
+                    x: 0, y: 56.44, xref: 'x', yref: 'y',
+                    text: 'Media: $56.44',
+                    showarrow: true, arrowhead: 2, ax: 40, ay: -40,
+                    font: { color: '#00ff88', size: 12 }
+                }]
+            };
+
+            Plotly.newPlot('priceDistribution', [trace2], layout2, {responsive: true});
+        }
+    </script>
+</body>
+</html>
