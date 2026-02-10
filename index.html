@@ -56,7 +56,6 @@
             z-index: 1;
         }
 
-        /* Header */
         header {
             text-align: center;
             margin-bottom: 4rem;
@@ -82,7 +81,6 @@
             line-height: 1.7;
         }
 
-        /* Controls */
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -149,7 +147,6 @@
             border-color: var(--accent-green);
         }
 
-        /* View Toggle */
         .view-toggle {
             display: flex;
             gap: 0.5rem;
@@ -174,7 +171,6 @@
             border-color: var(--accent-purple);
         }
 
-        /* Cards Grid */
         .cards-view {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -343,7 +339,6 @@
             text-align: right;
         }
 
-        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -439,7 +434,6 @@
             font-weight: 600;
         }
 
-        /* Table View */
         .table-view {
             display: none;
             background: var(--bg-secondary);
@@ -490,7 +484,6 @@
             background: var(--card-hover);
         }
 
-        /* Top 3 Section */
         .top-3-section {
             margin: 4rem 0;
             animation: fadeIn 0.8s ease-out 0.4s backwards;
@@ -621,7 +614,6 @@
             font-weight: bold;
         }
 
-        /* Matrix View - Solo para Análisis de Precios */
         .matrix-view {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -631,7 +623,6 @@
             animation: fadeIn 0.8s ease-out 0.6s backwards;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -652,7 +643,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 2rem 1rem; }
             .controls { flex-direction: column; }
@@ -782,7 +772,7 @@
                 <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid var(--border-color);">
                     <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">PRECIO PROMEDIO</div>
                     <div id="avgPrice" style="font-size: 2.5rem; font-weight: 700; color: var(--accent-cyan);"></div>
-                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">USD/mes (n=11)</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem;">USD/mes (n=<span id="platformCount">13</span>)</div>
                 </div>
                 <div style="background: var(--bg-tertiary); padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid var(--border-color);">
                     <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace;">MEDIANA</div>
@@ -831,8 +821,55 @@
     </div>
 
     <script>
-        // Data updated with user observations
         const platforms = [
+            {
+                name: 'Fastbots',
+                url: 'https://fastbots.ai',
+                region: '🇺🇸 USA',
+                easySetup: 'easy',
+                connection: 'WhatsApp, Messenger, IG, Telegram, Slack',
+                handoff: true,
+                analytics: 'Medio',
+                integrations: 'Zapier, Make, WordPress, 8000+ apps',
+                price: '$39',
+                priceNum: 39,
+                notes: 'Business: 5 bots, 5K msgs, Multi-modelo, RAG completo',
+                isLatam: false,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>RAG Completo:</strong> Acepta archivos, URLs, texto plano y crawling de sitios web para entrenar al bot.</li>
+                        <li><strong>Multi-Modelo:</strong> Permite elegir entre modelos de OpenAI, Anthropic y Google para cada bot.</li>
+                        <li><strong>Multicanal Nativo:</strong> Integración directa con WhatsApp, Messenger, Instagram, Telegram y Slack sin costos extra.</li>
+                        <li><strong>No-Code Total:</strong> Configuración muy sencilla, sin necesidad de conocimientos técnicos. Setup en minutos.</li>
+                        <li><strong>Zapier AI Actions:</strong> Los bots pueden ejecutar acciones en miles de apps durante la conversación (consultar pedidos, agendar citas, enviar emails).</li>
+                        <li><strong>Soporte Multilingüe:</strong> Soporta ~95 idiomas con detección automática.</li>
+                    </ul>
+                `
+            },
+            {
+                name: 'Builderbot',
+                url: 'https://builderbot.cloud',
+                region: '🌎 LATAM / Global',
+                easySetup: 'easy',
+                connection: 'WhatsApp (QR + API Cloud)',
+                handoff: true,
+                analytics: 'Básico',
+                integrations: 'CRM, Webhooks, API',
+                price: '$40',
+                priceNum: 40,
+                notes: 'No-code cloud, IA conversacional, transcribe audio',
+                isLatam: true,
+                userAnalysis: `
+                    <ul>
+                        <li><strong>Open Source + Cloud:</strong> Tiene versión open source (BuilderBot.app) para devs y versión no-code cloud para usuarios sin conocimientos técnicos.</li>
+                        <li><strong>IA Conversacional:</strong> Bot con IA integrada que interpreta, contextualiza y mantiene conversaciones naturales.</li>
+                        <li><strong>Transcripción de Audio:</strong> Capaz de entender mensajes de voz enviados por los clientes.</li>
+                        <li><strong>Setup Rápido:</strong> Configuración guiada, permite tener un bot funcionando en minutos sin programar.</li>
+                        <li><strong>Comunidad Activa:</strong> Proyecto con comunidad de desarrolladores activa, ganador del primer premio en OpenExpo 2024.</li>
+                        <li><strong>Orientado a LATAM:</strong> Documentación y soporte en español, enfocado en el mercado latinoamericano.</li>
+                    </ul>
+                `
+            },
             {
                 name: 'Manychat',
                 url: 'https://manychat.com',
@@ -1180,13 +1217,11 @@
                 );
             }
 
-            // Keep correct index for modal mapping
             const mappedFiltered = filtered.map(p => {
                 const originalIndex = platforms.findIndex(orig => orig.name === p.name);
                 return { ...p, originalIndex };
             });
 
-            // Update render call to use original index
             const cardsView = document.getElementById('cardsView');
             cardsView.innerHTML = mappedFiltered.map(platform => `
                 <div class="platform-card" style="--index: ${platform.originalIndex}">
@@ -1255,7 +1290,7 @@
             modalTitle.textContent = `Análisis de ${platform.name}`;
             modalBody.innerHTML = platform.userAnalysis;
             modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
+            document.body.style.overflow = 'hidden';
         }
 
         closeModal.addEventListener('click', () => {
@@ -1263,7 +1298,6 @@
             document.body.style.overflow = 'auto';
         });
 
-        // Close on outside click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.classList.remove('active');
@@ -1271,7 +1305,6 @@
             }
         });
 
-        // Escape key close
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
                 modal.classList.remove('active');
@@ -1331,6 +1364,7 @@
             document.getElementById('medianPrice').textContent = `$${median.toFixed(0)}`;
             document.getElementById('stdDev').textContent = `±$${stdDev.toFixed(0)}`;
             document.getElementById('priceRange').textContent = `$${min}-$${max}`;
+            document.getElementById('platformCount').textContent = prices.length;
             
             return { avg, median, stdDev, min, max };
         }
@@ -1403,6 +1437,7 @@
         function createStatisticalAnalysis() {
             const allPlatforms = [
                 { name: 'AIsensy Basic', price: 12 }, { name: 'AIsensy Pro', price: 29 },
+                { name: 'Fastbots', price: 39 }, { name: 'Builderbot', price: 40 },
                 { name: 'Manychat', price: 44 }, { name: 'Botpress', price: 89 },
                 { name: 'DanteAI', price: 99 }, { name: 'Laburen', price: 99 },
                 { name: 'Cliengo', price: 119 }, { name: 'YourGPT', price: 129 },
@@ -1415,7 +1450,9 @@
             const min = prices[0];
             const max = prices[n - 1];
             const q1 = prices[Math.floor(n * 0.25)];
-            const median = (prices[n / 2 - 1] + prices[n / 2]) / 2;
+            const median = n % 2 === 0 
+                ? (prices[n / 2 - 1] + prices[n / 2]) / 2 
+                : prices[Math.floor(n / 2)];
             const q3 = prices[Math.floor(n * 0.75)];
             const mean = prices.reduce((a, b) => a + b, 0) / n;
 
@@ -1450,7 +1487,6 @@
             ctx.strokeStyle = '#00d4ff';
             ctx.lineWidth = 2;
             
-            // Whiskers
             ctx.beginPath(); ctx.moveTo(xScale(min), centerY - 20); ctx.lineTo(xScale(min), centerY + 20); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(xScale(max), centerY - 20); ctx.lineTo(xScale(max), centerY + 20); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(xScale(min), centerY); ctx.lineTo(xScale(q1), centerY); ctx.stroke();
@@ -1479,7 +1515,7 @@
             });
             
             ctx.textAlign = 'left';
-            ctx.fillText('Boxplot Distribución de Precios', padding, 30);
+            ctx.fillText('Boxplot Distribución de Precios (n=14)', padding, 30);
             ctx.fillStyle = '#00ff88';
             ctx.textAlign = 'right';
             ctx.fillText('█ Mediana', width - padding, 30);
