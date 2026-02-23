@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia de Mercado - Chat Dúo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #111936;
+            --bg-tertiary: #1a2351;
+            --accent-green: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7c3aed;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Nav Bar */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        /* Propuesta de Valor */
+        .value-prop {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .prop-card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .prop-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-purple);
+        }
+
+        .prop-card h3 {
+            color: var(--accent-cyan);
+            margin-top: 0;
+        }
+
+        /* Tabla Comparativa */
+        .table-container {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            margin-bottom: 4rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--accent-green);
+            border-bottom: 2px solid var(--border-color);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .high-light-row {
+            background: rgba(0, 255, 136, 0.05);
+            font-weight: bold;
+        }
+
+        /* Segmentos */
+        .segments {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .segment-box {
+            background: var(--bg-tertiary);
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 5px solid var(--accent-purple);
+        }
+
+        .segment-box h3 {
+            margin-top: 0;
+            color: var(--accent-green);
+        }
+
+        .target-box {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(0, 212, 255, 0.2));
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .price-target {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-link">🤖 Mapa de Plataformas</a>
+        <a href="precios.html" class="nav-link">💰 Mapa de Precios CRM</a>
+        <a href="estrategia-chatduo.html" class="nav-link active">🎯 Estrategia Chat Dúo</a>
+    </nav>
+
+    <header>
+        <h1>Análisis Estratégico Chat Dúo</h1>
+        <p style="color: var(--text-secondary); max-width: 700px; margin: 0 auto;">
+            Estudio de posicionamiento para bots self-service en WhatsApp e Instagram enfocado en PyMEs Argentinas.
+        </p>
+    </header>
+
+    <section class="value-prop">
+        <div class="prop-card">
+            <h3>Seguridad Oficial</h3>
+            <p>Uso exclusivo de Cloud API de Meta para evitar bloqueos y garantizar estabilidad.</p>
+        </div>
+        <div class="prop-card">
+            <h3>Omnicanalidad</h3>
+            <p>Constructor unificado para WhatsApp e Instagram sin herramientas separadas.</p>
+        </div>
+        <div class="prop-card">
+            <h3>IA Accesible</h3>
+            <p>Agentes avanzados para tareas complejas sin requerir conocimientos de programación.</p>
+        </div>
+    </section>
+
+    <h2 style="color: var(--accent-cyan);">Comparativa de Constructores (Builders)</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Plataforma</th>
+                    <th>Conexión</th>
+                    <th>Precio Base</th>
+                    <th>Complejidad</th>
+                    <th>Instagram</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Parlabots</td><td>Cloud API</td><td>$110 USD</td><td>Muy Alta</td><td>Sí</td></tr>
+                <tr><td>Botmaker</td><td>Cloud API</td><td>$149 USD</td><td>Alta</td><td>Sí</td></tr>
+                <tr><td>ManyChat</td><td>Cloud API</td><td>$15 USD</td><td>Media</td><td>Sí</td></tr>
+                <tr><td>Chatfuel</td><td>Cloud API</td><td>$39 USD</td><td>Media</td><td>Sí</td></tr>
+                <tr><td>Botpress</td><td>Cloud API</td><td>$89 USD</td><td>Alta</td><td>Sí</td></tr>
+                <tr><td>Voiceflow</td><td>Cloud API</td><td>$60 USD</td><td>Muy Alta</td><td>Sí</td></tr>
+                <tr class="high-light-row"><td>Chat Dúo (Target)</td><td>Oficial Meta</td><td>$45 - $70 USD</td><td>Baja/Media</td><td>Sí</td></tr>
+                <tr><td>WhatsAuto</td><td>No Oficial</td><td>$10 USD</td><td>Baja</td><td>No</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2 style="color: var(--accent-cyan);">Segmentación de Mercado</h2>
+    <div class="segments">
+        <div class="segment-box">
+            <h3>Segmento 1: Bajo Costo (No Oficial)</h3>
+            <p>Herramientas como WhatsAuto o WAPLUS. Inestables, alto riesgo de bloqueo y sin IA real. <strong>Chat Dúo no compite aquí.</strong></p>
+        </div>
+        <div class="segment-box">
+            <h3>Segmento 2: Builders Oficiales (Precio Medio)</h3>
+            <p>ManyChat, Chatfuel, UChat. Es el terreno de oportunidad. La debilidad actual es que la IA avanzada es difícil de implementar para usuarios no técnicos.</p>
+        </div>
+        <div class="segment-box">
+            <h3>Segmento 3: Enterprise (Alto Costo)</h3>
+            <p>Botmaker, Parlabots. Precios prohibitivos para la PyME típica argentina ($150+ USD). Curva de aprendizaje muy empinada.</p>
+        </div>
+    </div>
+
+    <div class="target-box">
+        <h2 style="margin-top: 0;">Estrategia de Posicionamiento</h2>
+        <p>Chat Dúo debe ubicarse en el extremo superior del Segmento 2, ofreciendo la potencia del Segmento 3 pero con una facilidad de uso radical.</p>
+        <div class="price-target">$45 - $70</div>
+        <p style="font-family: 'JetBrains Mono'; color: var(--accent-cyan);">USD / Mensuales</p>
+        <p style="margin-top: 1.5rem; font-style: italic;">"La potencia de la IA Enterprise, simplificada para PyMEs."</p>
+    </div>
+</div>
+
+</body>
+</html>
