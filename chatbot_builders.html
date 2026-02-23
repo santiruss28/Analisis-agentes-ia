@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Dúo - Análisis de Competencia: Bot Builders para WhatsApp e Instagram</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #111936;
+            --bg-tertiary: #1a2351;
+            --accent-green: #00ff88;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #7c3aed;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --card-hover: rgba(0, 255, 136, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .section-title {
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Propuesta de Valor */
+        .value-prop {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+        }
+
+        .value-prop h2 {
+            font-size: 1.3rem;
+            color: var(--accent-green);
+            margin-bottom: 1rem;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .value-item {
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .value-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-green);
+        }
+
+        .value-item h3 {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-item p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.8s ease-out 0.3s backwards;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.2rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-green);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 212, 255, 0.15));
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .view-btn {
+            padding: 0.7rem 1.2rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--text-primary);
+        }
+
+        .view-btn.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(124, 58, 237, 0.15));
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .platform-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 1.8rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .platform-card:hover {
+            border-color: var(--accent-green);
+            background: var(--card-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .platform-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: color 0.3s;
+        }
+
+        .platform-name:hover {
+            color: var(--accent-green);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-oficial {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .badge-no-oficial {
+            background: rgba(255, 100, 100, 0.15);
+            color: #ff6464;
+            border: 1px solid rgba(255, 100, 100, 0.3);
+        }
+
+        .badge-complexity {
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .complexity-baja {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent-green);
+        }
+
+        .complexity-media {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--accent-cyan);
+        }
+
+        .complexity-alta {
+            background: rgba(255, 136, 0, 0.15);
+            color: #ff8800;
+        }
+
+        .complexity-muy-alta {
+            background: rgba(255, 64, 64, 0.15);
+            color: #ff4040;
+        }
+
+        .card-type {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 0.8rem;
+            font-style: italic;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-tag {
+            padding: 0.3rem 0.7rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-tag.has-ig {
+            color: var(--accent-purple);
+            border-color: rgba(124, 58, 237, 0.3);
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .feature-tag.has-ia {
+            color: var(--accent-cyan);
+            border-color: rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .price-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        th {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--accent-green);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem 1.2rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background: var(--card-hover);
+        }
+
+        /* Segments */
+        .segments-section {
+            margin-top: 4rem;
+        }
+
+        .segment-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s;
+        }
+
+        .segment-card:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .segment-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .segment-card .segment-range {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-green);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .segment-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .segment-card li {
+            padding: 0.4rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .segment-card li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .segment-conclusion {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-green);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .segment-conclusion strong {
+            color: var(--accent-green);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .stat-detail {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Criteria Section */
+        .criteria-section {
+            margin-top: 4rem;
+        }
+
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .criteria-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 1.8rem;
+            transition: border-color 0.3s;
+        }
+
+        .criteria-card:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .criteria-card h3 {
+            color: var(--accent-cyan);
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .criteria-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-bar {
+                gap: 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-bg"></div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-link">🤖 Agentes IA</a>
+            <a href="precios.html" class="nav-link">💰 Precios CRM</a>
+            <a href="kanban_crm_dashboard_dark.html" class="nav-link">🎯 Kanban CRM</a>
+            <a href="chatbot_builders.html" class="nav-link active">💬 Bot Builders</a>
+        </nav>
+
+        <!-- Header -->
+        <header>
+            <h1>💬 Análisis de Competencia: Chat Dúo</h1>
+            <p class="subtitle">Comparativa de plataformas de creación de bots self-service para <strong style="color: var(--accent-green);">WhatsApp</strong> e <strong style="color: var(--accent-purple);">Instagram</strong>. Análisis de precios, funcionalidades y posicionamiento de mercado para el lanzamiento de Chat Dúo.</p>
+        </header>
+
+        <!-- Propuesta de Valor Chat Dúo -->
+        <div class="value-prop">
+            <h2>🚀 Propuesta de Valor de Chat Dúo</h2>
+            <div class="value-grid">
+                <div class="value-item">
+                    <h3>🔒 Seguridad y Estabilidad</h3>
+                    <p>Cloud API oficial de Meta para garantizar la seguridad de la cuenta de WhatsApp y rendimiento sin interrupciones.</p>
+                </div>
+                <div class="value-item">
+                    <h3>📱 Omnicanalidad Real</h3>
+                    <p>Constructor unificado para WhatsApp e Instagram sin necesidad de herramientas o integraciones separadas.</p>
+                </div>
+                <div class="value-item">
+                    <h3>🧠 IA Accesible</h3>
+                    <p>Agentes de IA avanzada que realizan tareas complejas (resúmenes, clasificación de leads, generación de contenido) sin programación.</p>
+                </div>
+                <div class="value-item">
+                    <h3>💎 Precios Transparentes</h3>
+                    <p>Sin costos ocultos por volumen de conversaciones o complejidad de nodos. Suscripción clara y predecible.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar plataforma, tipo, conexión...">
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="oficial">✅ API Oficial</button>
+                <button class="filter-btn" data-filter="instagram">📸 Instagram</button>
+                <button class="filter-btn" data-filter="ia">🧠 Bot + IA</button>
+                <button class="filter-btn" data-filter="economico">💸 < $50</button>
+            </div>
+            <div class="filter-group">
+                <button class="view-btn active" data-view="cards">📊 Cards</button>
+                <button class="view-btn" data-view="table">📋 Tabla</button>
+            </div>
+        </div>
+
+        <!-- Cards View -->
+        <div id="cardsView" class="cards-grid"></div>
+
+        <!-- Table View -->
+        <div id="tableView" class="table-container hidden"></div>
+
+        <!-- Price Stats -->
+        <div style="margin-top: 4rem;">
+            <h2 class="section-title">💰 Análisis de Precios</h2>
+            <div class="stats-grid" id="statsGrid"></div>
+        </div>
+
+        <!-- Charts -->
+        <div>
+            <h2 class="section-title">📊 Visualización de Precios</h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1rem;">Precio Base por Plataforma</h3>
+                    <canvas id="priceBarChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3 style="color: var(--accent-cyan); margin-bottom: 1rem; font-size: 1rem;">Precio vs Complejidad</h3>
+                    <canvas id="priceComplexityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Segmentation Analysis -->
+        <div class="segments-section">
+            <h2 class="section-title">📈 Segmentación de Mercado</h2>
+            <div id="segmentsContainer"></div>
+        </div>
+
+        <!-- Criteria -->
+        <div class="criteria-section">
+            <h2 class="section-title">🔬 Criterios de Evaluación</h2>
+            <div class="criteria-grid">
+                <div class="criteria-card">
+                    <h3>1. Tipo de Conexión</h3>
+                    <p>Filtro de seguridad principal: Cloud API oficial de Meta vs. métodos no oficiales (WhatsApp Web/QR). Vital para garantizar estabilidad y evitar bloqueos de cuenta.</p>
+                </div>
+                <div class="criteria-card">
+                    <h3>2. Omnicanalidad</h3>
+                    <p>Capacidad de gestionar flujos tanto en WhatsApp como en Instagram desde un mismo constructor, sin herramientas separadas.</p>
+                </div>
+                <div class="criteria-card">
+                    <h3>3. Independencia del CRM</h3>
+                    <p>Chatbot Builders puros que funcionen como motor de automatización e integren con cualquier sistema existente vía Webhooks o Make/Zapier.</p>
+                </div>
+                <div class="criteria-card">
+                    <h3>4. Nivel de Complejidad</h3>
+                    <p>Curva de aprendizaje evaluada: desde Baja (reglas sencillas) hasta Muy Alta (plataformas para desarrolladores con código e IA propia).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Platform Data from Chat Dúo Analysis
+        const platforms = [
+            {
+                name: 'ManyChat',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Solo Bot',
+                price: 15,
+                complexity: 'Media',
+                instagram: true,
+                oficial: true,
+                hasIA: false,
+                notes: 'Popular por su facilidad. Funcionalidad de IA limitada o cobra extra.'
+            },
+            {
+                name: 'UChat',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 29,
+                complexity: 'Alta',
+                instagram: true,
+                oficial: true,
+                hasIA: true,
+                notes: 'Buen precio con IA, pero complejidad en configuración de IA.'
+            },
+            {
+                name: 'Chatfuel',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 39,
+                complexity: 'Media',
+                instagram: true,
+                oficial: true,
+                hasIA: true,
+                notes: 'Popular por su facilidad. Buen equilibrio precio-funcionalidad.'
+            },
+            {
+                name: 'Typebot',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 46,
+                complexity: 'Media',
+                instagram: false,
+                oficial: true,
+                hasIA: true,
+                notes: 'No es omnicanal (sin Instagram). Buen builder visual.'
+            },
+            {
+                name: 'Voiceflow',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 60,
+                complexity: 'Muy Alta',
+                instagram: true,
+                oficial: true,
+                hasIA: true,
+                notes: 'Máxima personalización. Diseñada para equipos técnicos.'
+            },
+            {
+                name: 'Botpress',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 89,
+                complexity: 'Alta',
+                instagram: true,
+                oficial: true,
+                hasIA: true,
+                notes: 'APIs robustas y capacidades avanzadas de IA. Curva de aprendizaje alta.'
+            },
+            {
+                name: 'Parlabots',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 110,
+                complexity: 'Muy Alta',
+                instagram: true,
+                oficial: true,
+                hasIA: true,
+                notes: 'Máxima personalización. Costos prohibitivos para PyMEs típicas.'
+            },
+            {
+                name: 'Botmaker',
+                connection: 'Cloud API Oficial',
+                type: 'Plataforma. Bot + IA',
+                price: 149,
+                complexity: 'Alta',
+                instagram: true,
+                oficial: true,
+                hasIA: true,
+                notes: 'Incluye $99 USD de setup. Diseñado para integradores o empresas grandes.'
+            },
+            {
+                name: 'WAPLUS',
+                connection: 'Integración No Oficial',
+                type: 'Extensión Chrome. Solo Bot',
+                price: 15,
+                complexity: 'Media',
+                instagram: false,
+                oficial: false,
+                hasIA: false,
+                notes: 'Extensión de Chrome. Conexión no oficial, riesgo de bloqueo.'
+            },
+            {
+                name: 'WhatsAuto',
+                connection: 'Integración No Oficial',
+                type: 'App Smartphone. Solo Bot',
+                price: 10,
+                complexity: 'Baja',
+                instagram: false,
+                oficial: false,
+                hasIA: false,
+                notes: 'Solo respuesta automática simple. Alta inestabilidad.'
+            },
+            {
+                name: 'AutoResponder',
+                connection: 'Integración No Oficial',
+                type: 'App Smartphone. Solo Bot',
+                price: 7,
+                complexity: 'Baja',
+                instagram: false,
+                oficial: false,
+                hasIA: false,
+                notes: 'El más barato. Funcionalidad muy limitada.'
+            }
+        ];
+
+        // Market Segments
+        const segments = [
+            {
+                name: 'Segmento 1: Soluciones No Oficiales / Bajo Costo',
+                color: '#ff6464',
+                range: '$7 - $15 USD',
+                platforms: ['WAPLUS', 'WhatsAuto', 'AutoResponder'],
+                features: [
+                    'Precio base muy bajo',
+                    'Conexión no oficial, alta inestabilidad y riesgo de bloqueo',
+                    'Funcionalidad limitada (solo respuesta automática simple)',
+                    'No apto para PyMEs que dependan de comunicación estable'
+                ],
+                conclusion: 'Chat Dúo <strong>no compite</strong> en este segmento, ya que su propuesta de valor está basada en la seguridad y la IA avanzada (Cloud API Oficial).'
+            },
+            {
+                name: 'Segmento 2: Chatbot Builders Oficiales / Precio Medio',
+                color: '#00d4ff',
+                range: '$15 - $46 USD',
+                platforms: ['ManyChat', 'Chatfuel', 'UChat', 'Typebot'],
+                features: [
+                    'Buen equilibrio entre precio y funcionalidad',
+                    'ManyChat y Chatfuel son populares por su facilidad',
+                    'IA avanzada limitada, se cobra extra o es difícil de implementar',
+                    'UChat y Typebot tienen complejidades en configuración de IA'
+                ],
+                conclusion: 'Posicionarse en el extremo superior de este segmento (<strong>$45 - $70 USD</strong>) ofreciendo una integración de IA mucho más sencilla y potente, justificando la prima por la "experiencia IA simplificada".'
+            },
+            {
+                name: 'Segmento 3: Plataformas de IA y Enterprise / Alto Costo',
+                color: '#7c3aed',
+                range: '$60 - $149 USD',
+                platforms: ['Voiceflow', 'Botpress', 'Parlabots', 'Botmaker'],
+                features: [
+                    'Máxima personalización, APIs robustas y capacidades avanzadas de IA',
+                    'Curva de aprendizaje muy alta',
+                    'Costos prohibitivos para la PyME típica argentina',
+                    'Diseñadas para integradores o grandes empresas'
+                ],
+                conclusion: 'Chat Dúo debe <strong>evitar ser percibido como competidor directo</strong>. La clave es ofrecer una porción de la potencia de IA de este segmento a un precio del Segmento 2.'
+            }
+        ];
+
+        // Render Cards
+        function renderCards(filteredPlatforms) {
+            const container = document.getElementById('cardsView');
+            container.innerHTML = filteredPlatforms.map((p, i) => {
+                const complexityClass = p.complexity === 'Baja' ? 'complexity-baja' :
+                    p.complexity === 'Media' ? 'complexity-media' :
+                    p.complexity === 'Alta' ? 'complexity-alta' : 'complexity-muy-alta';
+
+                return `
+                <div class="platform-card" style="animation-delay: ${i * 0.05}s">
+                    <div class="card-header">
+                        <div>
+                            <div class="platform-name">${p.name}</div>
+                            <div class="card-type">${p.type}</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem; align-items: flex-end;">
+                            <span class="badge ${p.oficial ? 'badge-oficial' : 'badge-no-oficial'}">
+                                ${p.oficial ? '✅ API Oficial' : '⚠️ No Oficial'}
+                            </span>
+                            <span class="badge-complexity ${complexityClass}">${p.complexity}</span>
+                        </div>
+                    </div>
+                    <div class="card-features">
+                        ${p.instagram ? '<span class="feature-tag has-ig">📸 Instagram</span>' : ''}
+                        ${p.hasIA ? '<span class="feature-tag has-ia">🧠 IA Integrada</span>' : '<span class="feature-tag">Solo Bot</span>'}
+                        <span class="feature-tag">${p.connection}</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">${p.notes}</p>
+                    <div class="card-footer">
+                        <div>
+                            <div class="price-tag">$${p.price}</div>
+                            <div class="price-label">USD/mes</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Render Table
+        function renderTable(filteredPlatforms) {
+            const container = document.getElementById('tableView');
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Tipo de Conexión</th>
+                            <th>Tipo de Producto</th>
+                            <th>Precio Base</th>
+                            <th>Complejidad</th>
+                            <th>Instagram</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredPlatforms.map(p => `
+                            <tr>
+                                <td style="font-weight: 700;">${p.name}</td>
+                                <td>
+                                    <span style="color: ${p.oficial ? 'var(--accent-green)' : '#ff6464'};">
+                                        ${p.oficial ? '✅' : '⚠️'} ${p.connection}
+                                    </span>
+                                </td>
+                                <td>${p.type}</td>
+                                <td style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent-green);">$${p.price} USD</td>
+                                <td>
+                                    <span class="badge-complexity ${
+                                        p.complexity === 'Baja' ? 'complexity-baja' :
+                                        p.complexity === 'Media' ? 'complexity-media' :
+                                        p.complexity === 'Alta' ? 'complexity-alta' : 'complexity-muy-alta'
+                                    }">${p.complexity}</span>
+                                </td>
+                                <td style="text-align: center; font-size: 1.2rem;">${p.instagram ? '✅' : '❌'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        // Calculate Stats
+        function renderStats() {
+            const prices = platforms.map(p => p.price);
+            const oficialPrices = platforms.filter(p => p.oficial).map(p => p.price);
+            const sorted = [...prices].sort((a, b) => a - b);
+
+            const avg = (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(0);
+            const median = sorted.length % 2 === 0
+                ? ((sorted[sorted.length/2 - 1] + sorted[sorted.length/2]) / 2).toFixed(0)
+                : sorted[Math.floor(sorted.length/2)];
+            const min = Math.min(...prices);
+            const max = Math.max(...prices);
+
+            const avgOficial = (oficialPrices.reduce((a, b) => a + b, 0) / oficialPrices.length).toFixed(0);
+
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Precio Promedio</div>
+                    <div class="stat-value" style="color: var(--accent-cyan);">$${avg}</div>
+                    <div class="stat-detail">USD/mes (n=${prices.length})</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Mediana</div>
+                    <div class="stat-value" style="color: var(--accent-green);">$${median}</div>
+                    <div class="stat-detail">50% están por debajo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Rango</div>
+                    <div class="stat-value" style="color: #ff8800;">$${min}-$${max}</div>
+                    <div class="stat-detail">Min - Max</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Promedio API Oficial</div>
+                    <div class="stat-value" style="color: var(--accent-purple);">$${avgOficial}</div>
+                    <div class="stat-detail">Solo plataformas oficiales (n=${oficialPrices.length})</div>
+                </div>
+            `;
+        }
+
+        // Render Segments
+        function renderSegments() {
+            const container = document.getElementById('segmentsContainer');
+            container.innerHTML = segments.map(seg => `
+                <div class="segment-card" style="border-left: 4px solid ${seg.color};">
+                    <h3 style="color: ${seg.color};">${seg.name}</h3>
+                    <div class="segment-range">${seg.range}</div>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.8rem;">
+                        Plataformas: <strong style="color: var(--text-primary);">${seg.platforms.join(', ')}</strong>
+                    </p>
+                    <ul>
+                        ${seg.features.map(f => `<li>${f}</li>`).join('')}
+                    </ul>
+                    <div class="segment-conclusion">
+                        <strong>Chat Dúo:</strong> ${seg.conclusion}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Charts
+        function createCharts() {
+            const sorted = [...platforms].sort((a, b) => a.price - b.price);
+
+            // Price Bar Chart
+            new Chart(document.getElementById('priceBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(p => p.name),
+                    datasets: [{
+                        label: 'Precio USD/mes',
+                        data: sorted.map(p => p.price),
+                        backgroundColor: sorted.map(p =>
+                            p.oficial ? 'rgba(0, 255, 136, 0.6)' : 'rgba(255, 100, 100, 0.6)'
+                        ),
+                        borderColor: sorted.map(p =>
+                            p.oficial ? 'rgba(0, 255, 136, 1)' : 'rgba(255, 100, 100, 1)'
+                        ),
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(ctx) {
+                                    const p = sorted[ctx.dataIndex];
+                                    return `${p.oficial ? 'API Oficial' : 'No Oficial'} | ${p.complexity}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#94a3b8', callback: v => '$' + v },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#94a3b8', maxRotation: 45 },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Price vs Complexity Bubble Chart
+            const complexityMap = { 'Baja': 1, 'Media': 2, 'Alta': 3, 'Muy Alta': 4 };
+            const colorMap = { 'Baja': '#00ff88', 'Media': '#00d4ff', 'Alta': '#ff8800', 'Muy Alta': '#ff4040' };
+
+            new Chart(document.getElementById('priceComplexityChart'), {
+                type: 'bubble',
+                data: {
+                    datasets: platforms.map(p => ({
+                        label: p.name,
+                        data: [{
+                            x: complexityMap[p.complexity],
+                            y: p.price,
+                            r: p.instagram ? 12 : 7
+                        }],
+                        backgroundColor: colorMap[p.complexity] + '80',
+                        borderColor: colorMap[p.complexity],
+                        borderWidth: 2
+                    }))
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    const p = platforms.find(pl => pl.name === ctx.dataset.label);
+                                    return `${p.name}: $${p.price} | ${p.complexity} | IG: ${p.instagram ? 'Sí' : 'No'}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Precio (USD/mes)', color: '#94a3b8' },
+                            ticks: { color: '#94a3b8', callback: v => '$' + v },
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Complejidad', color: '#94a3b8' },
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function(v) {
+                                    return ['', 'Baja', 'Media', 'Alta', 'Muy Alta'][v] || '';
+                                },
+                                stepSize: 1
+                            },
+                            min: 0.5,
+                            max: 4.5,
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Filters
+        let activeFilter = 'all';
+        let searchTerm = '';
+
+        function applyFilters() {
+            let filtered = [...platforms];
+
+            if (activeFilter === 'oficial') {
+                filtered = filtered.filter(p => p.oficial);
+            } else if (activeFilter === 'instagram') {
+                filtered = filtered.filter(p => p.instagram);
+            } else if (activeFilter === 'ia') {
+                filtered = filtered.filter(p => p.hasIA);
+            } else if (activeFilter === 'economico') {
+                filtered = filtered.filter(p => p.price < 50);
+            }
+
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filtered = filtered.filter(p =>
+                    p.name.toLowerCase().includes(term) ||
+                    p.type.toLowerCase().includes(term) ||
+                    p.connection.toLowerCase().includes(term) ||
+                    p.notes.toLowerCase().includes(term) ||
+                    p.complexity.toLowerCase().includes(term)
+                );
+            }
+
+            renderCards(filtered);
+            renderTable(filtered);
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const view = btn.dataset.view;
+                document.getElementById('cardsView').classList.toggle('hidden', view !== 'cards');
+                document.getElementById('tableView').classList.toggle('hidden', view !== 'table');
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            applyFilters();
+        });
+
+        // Init
+        applyFilters();
+        renderStats();
+        renderSegments();
+        createCharts();
+    </script>
+</body>
+</html>
