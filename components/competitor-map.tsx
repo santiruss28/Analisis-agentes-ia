@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { Platform } from "@/lib/platforms-data";
+import { platforms as allPlatforms, type Platform } from "@/lib/platforms-data";
 
 interface PlatformCardProps {
   platform: Platform;
@@ -225,23 +225,21 @@ export function CompetitorMap() {
     null
   );
 
-  const { platforms: allPlatforms } = require("@/lib/platforms-data");
-
   const filteredPlatforms = useMemo(() => {
-    let filtered = allPlatforms as Platform[];
+    let filtered = [...allPlatforms];
 
     if (filter === "easy") {
-      filtered = filtered.filter((p: Platform) => p.easySetup === "easy");
+      filtered = filtered.filter((p) => p.easySetup === "easy");
     } else if (filter === "latam") {
-      filtered = filtered.filter((p: Platform) => p.isLatam);
+      filtered = filtered.filter((p) => p.isLatam);
     } else if (filter === "cheap") {
-      filtered = filtered.filter((p: Platform) => p.priceNum < 50);
+      filtered = filtered.filter((p) => p.priceNum < 50);
     }
 
     if (search) {
       const s = search.toLowerCase();
       filtered = filtered.filter(
-        (p: Platform) =>
+        (p) =>
           p.name.toLowerCase().includes(s) ||
           p.region.toLowerCase().includes(s) ||
           p.notes.toLowerCase().includes(s) ||
@@ -250,7 +248,7 @@ export function CompetitorMap() {
     }
 
     return filtered;
-  }, [allPlatforms, filter, search]);
+  }, [filter, search]);
 
   const filters = [
     { key: "all", label: "Todas" },
@@ -316,7 +314,7 @@ export function CompetitorMap() {
       {/* Cards View */}
       {view === "cards" && (
         <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filteredPlatforms.map((platform: Platform, index: number) => (
+          {filteredPlatforms.map((platform, index) => (
             <PlatformCard
               key={platform.name}
               platform={platform}
