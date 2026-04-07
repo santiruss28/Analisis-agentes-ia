@@ -507,19 +507,21 @@
       <h1>Agenda Producto</h1>
     </div>
 
-    <!-- AGENDA SECTION -->
+    <!-- EN PROGRESO SECTION -->
     <div class="section-title">
-      <span>Temas en agenda</span>
+      <span style="color: var(--accent-green);">En progreso</span>
     </div>
 
     <div class="agenda-grid">
       <!-- QA -->
-      <div class="agenda-card">
+      <div class="agenda-card" style="border-left: 3px solid var(--accent-amber);">
         <div class="agenda-card-header">
           <span class="agenda-card-icon" style="font-size: 1.3rem;">&#128269;</span>
           <span class="agenda-card-title">QA de funcionalidades</span>
+          <span class="badge badge-amber" style="margin-left: auto;">En progreso</span>
         </div>
         <div class="agenda-card-content">
+          <p style="margin-bottom: 0.75rem; color: var(--text-secondary);">Mix de funcionalidades: algunas ya probadas, otras pendientes de prueba.</p>
           <div class="badge-list">
             <span class="badge badge-cyan">Messenger</span>
             <span class="badge badge-cyan">Tools agentes</span>
@@ -532,46 +534,67 @@
       </div>
 
       <!-- Planning -->
-      <div class="agenda-card">
+      <div class="agenda-card" style="border-left: 3px solid var(--accent-amber);">
         <div class="agenda-card-header">
           <span class="agenda-card-icon" style="font-size: 1.3rem;">&#128197;</span>
           <span class="agenda-card-title">Planning</span>
+          <span class="badge badge-amber" style="margin-left: auto;">En progreso</span>
         </div>
         <div class="agenda-card-content">
-          Nuevo planning mediados de abril + features de atencion inmediata
+          <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">Solo mapa de lo que va a entrar, sin especificaciones ni logica de uso aun.</p>
+          <p style="font-size: 0.8rem; color: var(--accent-cyan);">Nuevo planning mediados de abril + features de atencion inmediata</p>
         </div>
       </div>
+    </div>
 
+    <!-- PENDIENTE / SIN INICIAR -->
+    <div class="section-title" style="margin-top: 2rem;">
+      <span style="color: var(--text-secondary);">Sin iniciar</span>
+    </div>
+
+    <div class="agenda-grid">
       <!-- Calendar -->
-      <div class="agenda-card">
+      <div class="agenda-card" style="border-left: 3px solid var(--text-secondary); opacity: 0.85;">
         <div class="agenda-card-header">
           <span class="agenda-card-icon" style="font-size: 1.3rem;">&#128640;</span>
           <span class="agenda-card-title">Lanzamiento Calendar</span>
+          <span class="badge" style="margin-left: auto; background: rgba(148,163,184,0.2); color: var(--text-secondary);">Sin iniciar</span>
         </div>
         <div class="agenda-card-content">
-          Estudio e investigacion para producto Calendar
+          <p style="color: var(--text-secondary);">Sin iniciar pruebas ni estudio de mercado para lanzamiento.</p>
         </div>
       </div>
+    </div>
 
+    <!-- A DEMANDA / CONSTANTE -->
+    <div class="section-title" style="margin-top: 2rem;">
+      <span style="color: var(--accent-cyan);">A demanda (constante)</span>
+    </div>
+
+    <div class="agenda-grid">
       <!-- Integraciones -->
-      <div class="agenda-card">
+      <div class="agenda-card" style="border-left: 3px solid var(--accent-cyan);">
         <div class="agenda-card-header">
           <span class="agenda-card-icon" style="font-size: 1.3rem;">&#128279;</span>
           <span class="agenda-card-title">Integraciones externas</span>
+          <span class="badge badge-cyan" style="margin-left: auto;">Constante</span>
         </div>
         <div class="agenda-card-content">
-          Evaluacion y ejecucion de cuentas con sistemas externos
+          <p style="color: var(--text-secondary);">A pedido de los equipos que lo soliciten.</p>
+          <p style="font-size: 0.8rem; color: var(--accent-purple); margin-top: 0.5rem;">Evaluacion y ejecucion de cuentas con sistemas externos</p>
         </div>
       </div>
 
       <!-- IA Especial -->
-      <div class="agenda-card">
+      <div class="agenda-card" style="border-left: 3px solid var(--accent-cyan);">
         <div class="agenda-card-header">
           <span class="agenda-card-icon" style="font-size: 1.3rem;">&#129504;</span>
           <span class="agenda-card-title">Clientes especiales IA</span>
+          <span class="badge badge-cyan" style="margin-left: auto;">Constante</span>
         </div>
         <div class="agenda-card-content">
-          Atencion y ejecucion de clientes especiales con IA
+          <p style="color: var(--text-secondary);">A pedido del area de CS que lo soliciten.</p>
+          <p style="font-size: 0.8rem; color: var(--accent-purple); margin-top: 0.5rem;">Ademas de atencion de clientes que ya fueron armados por Santi</p>
         </div>
       </div>
     </div>
