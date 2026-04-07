@@ -18,6 +18,7 @@
       --accent-cyan: #00d4ff;
       --accent-purple: #7c3aed;
       --accent-amber: #f59e0b;
+      --accent-pip: #ff6b35;
       --text-primary: #ffffff;
       --text-secondary: #94a3b8;
       --border-color: rgba(148, 163, 184, 0.1);
@@ -86,14 +87,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 1rem;
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      max-width: 750px;
-      margin: 0 auto;
+      margin-bottom: 0;
     }
 
     /* ── STAT CARDS ── */
@@ -217,6 +211,7 @@
     .badge-purple { background: rgba(124,58,237,0.25); color: #d8b4fe; }
     .badge-cyan   { background: rgba(0,212,255,0.15); color: var(--accent-cyan); }
     .badge-amber  { background: rgba(245,158,11,0.2); color: #fcd34d; }
+    .badge-pip    { background: rgba(255,107,53,0.25); color: #ff8f6b; }
 
     /* ── FEATURE ICONS ── */
     .feat-yes  { color: var(--accent-green); font-size: 1.1rem; }
@@ -318,35 +313,186 @@
       text-align: center;
     }
 
-    /* ── INSIGHTS BOX ── */
-    .insights-box {
-      background: linear-gradient(135deg, rgba(0,255,136,0.05), rgba(0,212,255,0.05));
-      border: 1px solid var(--accent-green);
+    .chart-card.pip-highlight {
+      border: 2px solid var(--accent-pip);
+      background: linear-gradient(135deg, rgba(255,107,53,0.05) 0%, var(--bg-secondary) 100%);
+    }
+
+    .chart-card.pip-highlight h3 {
+      color: var(--accent-pip);
+    }
+
+    /* ── STRATEGY SECTION ── */
+    .strategy-section {
+      background: linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(0,212,255,0.05) 100%);
+      border: 2px solid var(--accent-green);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-top: 3rem;
+    }
+
+    .strategy-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .strategy-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .strategy-grid { grid-template-columns: 1fr; }
+    }
+
+    .strategy-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 2rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .insights-box ul { list-style: none; padding: 0; }
-
-    .insights-box li {
-      margin-bottom: 0.75rem;
-      padding-left: 1.5rem;
+      padding: 1.5rem;
+      text-align: center;
       position: relative;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
+      overflow: hidden;
     }
 
-    .insights-box li::before {
-      content: '➤';
-      color: var(--accent-green);
+    .strategy-card::before {
+      content: '';
       position: absolute;
+      top: 0;
       left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
     }
 
-    .insights-box li strong { color: var(--text-primary); }
+    .strategy-card.highlight::before {
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+      height: 6px;
+    }
 
-    /* ── NOTES ── */
+    .strategy-card.highlight {
+      border-color: var(--accent-green);
+      transform: scale(1.02);
+    }
+
+    .strategy-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .strategy-card h4 {
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .strategy-card p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* Strategy Result */
+    .strategy-result {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1.5rem;
+      background: var(--bg-tertiary);
+      border-radius: 16px;
+      flex-wrap: wrap;
+    }
+
+    .result-arrow {
+      font-size: 2rem;
+      color: var(--accent-green);
+    }
+
+    .result-box {
+      background: linear-gradient(135deg, rgba(0,255,136,0.15) 0%, rgba(0,212,255,0.1) 100%);
+      border: 2px solid var(--accent-green);
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    .result-box .label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .result-box .value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Trend Chart Container */
+    .trend-visual {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 120px;
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+    }
+
+    .trend-bar {
+      width: 60px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 0.5rem;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .trend-bar span {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      position: absolute;
+      bottom: -1.5rem;
+      white-space: nowrap;
+    }
+
+    .trend-bar.low {
+      height: 30%;
+      background: linear-gradient(180deg, rgba(0,212,255,0.6) 0%, rgba(0,212,255,0.2) 100%);
+    }
+
+    .trend-bar.medium {
+      height: 55%;
+      background: linear-gradient(180deg, rgba(124,58,237,0.7) 0%, rgba(124,58,237,0.3) 100%);
+    }
+
+    .trend-bar.high {
+      height: 85%;
+      background: linear-gradient(180deg, rgba(0,255,136,0.8) 0%, rgba(0,255,136,0.3) 100%);
+    }
+
+    /* ── NOTAS ── */
     .notas {
       font-size: 0.8rem;
       color: var(--text-secondary);
@@ -370,6 +516,8 @@
       .nav-bar { gap: 0.75rem; padding: 0.75rem 1rem; }
       .nav-link { font-size: 0.8rem; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .strategy-result { flex-direction: column; gap: 1rem; }
+      .result-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
@@ -390,10 +538,6 @@
     <!-- HEADER -->
     <div class="page-header">
       <h1>Comparativa de Planes y Funcionalidades</h1>
-      <p class="subtitle">
-        Análisis de 6 plataformas CRM con IA: precios de planes representativos,
-        distribución de costos y comparativa de funcionalidades clave.
-      </p>
     </div>
 
     <!-- STAT CARDS -->
@@ -424,83 +568,36 @@
       </div>
     </div>
 
-    <!-- PRICING TABLE -->
-    <div class="table-container">
-      <div class="section-title">📋 Tabla de Precios por Plan</div>
-      <table>
-        <thead>
-          <tr>
-            <th class="left" style="width: 160px">Plataforma</th>
-            <th>Plan Básico</th>
-            <th>Precio Básico</th>
-            <th>Plan Avanzado</th>
-            <th>Precio Avanzado</th>
-            <th>Usuarios (básico)</th>
-            <th>Usuarios (avanzado)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="platform-name">Chattigo</td>
-            <td>Base</td>
-            <td class="price-cell price-basic">$195 <span class="plan-label">USD/mes</span></td>
-            <td>Corporate</td>
-            <td class="price-cell price-advanced">$449 <span class="plan-label">USD/mes</span></td>
-            <td>3</td>
-            <td>8</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Zenvia</td>
-            <td>Base <span class="badge badge-amber">WA sandbox</span></td>
-            <td class="price-cell price-basic">$20 <span class="plan-label">USD/mes</span></td>
-            <td>Specialist</td>
-            <td class="price-cell price-advanced">$150 <span class="plan-label">USD/mes</span></td>
-            <td>1</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Callbell</td>
-            <td>Base</td>
-            <td class="price-cell price-basic">$75 <span class="plan-label">USD/mes</span></td>
-            <td>Plus</td>
-            <td class="price-cell price-advanced">$200 <span class="plan-label">USD/mes</span></td>
-            <td>5</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Kommo <span class="badge badge-purple">ajustado</span></td>
-            <td>Avanzado 5u</td>
-            <td class="price-cell price-basic">$100 <span class="plan-label">USD/mes</span></td>
-            <td>Pro 10u</td>
-            <td class="price-cell price-advanced">$450 <span class="plan-label">USD/mes</span></td>
-            <td>5</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td class="platform-name">Vambe</td>
-            <td>Básico</td>
-            <td class="price-cell price-basic">$413 <span class="plan-label">USD/mes</span></td>
-            <td>Advanced</td>
-            <td class="price-cell price-advanced">$574 <span class="plan-label">USD/mes</span></td>
-            <td>3</td>
-            <td>10</td>
-          </tr>
-          <tr>
-            <td class="platform-name">B2chat</td>
-            <td>Básico</td>
-            <td class="price-cell price-basic">$178 <span class="plan-label">USD/mes</span></td>
-            <td>Premium</td>
-            <td class="price-cell price-advanced">$283 <span class="plan-label">USD/mes</span></td>
-            <td>5</td>
-            <td>10</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="notas">
-        <p><strong>Kommo (ajustado):</strong> El plan Básico original ($75, 5 usuarios) es muy limitado: sin mensajes masivos, sin bots y sin automatizaciones. Se recomienda analizar el plan <em>Avanzado con 5 usuarios ($100/mes)</em> y el plan <em>Pro con 10 usuarios ($450/mes)</em> para una comparativa más realista.</p>
-        <p><strong>Zenvia Base:</strong> Incluye WhatsApp Sandbox (solo para pruebas). El plan Specialist es el primero en incluir WhatsApp Business productivo.</p>
+    <!-- CHARTS: DISTRIBUCIÓN CON PIP (SIN ADICIONALES) -->
+    <div class="section-title" style="color: var(--accent-pip);">🚀 Pip vs Competencia (Sin Adicionales)</div>
+    <div class="charts-grid">
+      <div class="chart-card pip-highlight">
+        <h3>Plan Básico - Pip Pyme ($219) vs Competencia</h3>
+        <canvas id="chartBasicoPip"></canvas>
+      </div>
+      <div class="chart-card pip-highlight">
+        <h3>Plan Avanzado - Pip Pro ($279) vs Competencia</h3>
+        <canvas id="chartAvanzadoPip"></canvas>
       </div>
     </div>
+
+    <!-- CHARTS: DISTRIBUCIÓN CON PIP (CON ADICIONALES) -->
+    <div class="section-title" style="color: var(--accent-purple);">🧠 Pip vs Competencia (Con Adicionales IA)</div>
+    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+      Incluye: IA 1000 ($100 USD) + Chatflow 3000 ($75 USD) = +$175 USD
+    </p>
+    <div class="charts-grid">
+      <div class="chart-card pip-highlight" style="border-color: var(--accent-purple);">
+        <h3>Plan Básico - Pip Pyme + Adicionales ($394) vs Competencia</h3>
+        <canvas id="chartBasicoPipAdd"></canvas>
+      </div>
+      <div class="chart-card pip-highlight" style="border-color: var(--accent-purple);">
+        <h3>Plan Avanzado - Pip Pro + Adicionales ($454) vs Competencia</h3>
+        <canvas id="chartAvanzadoPipAdd"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
 
     <!-- FEATURE TABLE -->
     <div class="table-container">
@@ -682,7 +779,7 @@
             <td>
               <span class="feat-warn">⚠</span>
               <span class="tip-wrap">
-                <i class="tip-icon" data-tip="La reportería con IA (dashboards analíticos avanzados) está disponible solo en el plan Specialist ($150/mes). El plan Base incluye reportería básica sin IA.">i</i>
+                <i class="tip-icon" data-tip="La reportería con IA (dashboards analíticos avanzados) está disponible solo en el plan Specialist ($410/mes). El plan Base incluye reportería básica sin IA.">i</i>
               </span>
             </td>
             <!-- Callbell -->
@@ -726,43 +823,65 @@
       </div>
     </div>
 
-    <!-- CHARTS -->
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h3>Precios por plataforma: Básico vs Avanzado</h3>
-        <canvas id="chartComparativa"></canvas>
+    <!-- STRATEGY SECTION: CHATFLOW -->
+    <div class="strategy-section">
+      <div class="strategy-header">
+        <h2>Estrategia Chatflow</h2>
       </div>
-      <div class="chart-card">
-        <h3>Distribución de precios (planes básicos, orden ascendente)</h3>
-        <canvas id="chartDistBasico"></canvas>
-      </div>
-    </div>
 
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h3>Distribución de precios (planes avanzados, orden ascendente)</h3>
-        <canvas id="chartDistAvanzado"></canvas>
-      </div>
-      <div class="chart-card">
-        <h3>Promedio de planes vs precio individual</h3>
-        <canvas id="chartPromedios"></canvas>
-      </div>
-    </div>
+      <!-- Visual Cards -->
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <div class="strategy-icon">📈</div>
+          <h4>Competencia Creciente</h4>
+          <p>Surgimiento progresivo de plataformas CRM para WhatsApp</p>
+          <div class="trend-visual">
+            <div class="trend-bar low"><span>2022</span></div>
+            <div class="trend-bar medium"><span>2024</span></div>
+            <div class="trend-bar high"><span>2026</span></div>
+          </div>
+        </div>
 
-    <div class="divider"></div>
+        <div class="strategy-card">
+          <div class="strategy-icon">📌</div>
+          <h4>Tableros Incluidos</h4>
+          <p>Competidores ofrecen Kanban sin costo extra dentro del plan</p>
+          <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span class="badge badge-cyan">Kommo</span>
+            <span class="badge badge-cyan">Vambe</span>
+            <span class="badge badge-purple">$0 extra</span>
+          </div>
+        </div>
 
-    <!-- INSIGHTS -->
-    <div class="insights-box">
-      <div class="section-title">💡 Conclusiones Clave</div>
-      <ul>
-        <li><strong>Menor precio básico:</strong> Zenvia ($20/mes) — aunque su plan Base solo incluye WhatsApp Sandbox (no productivo). Para uso real, Callbell ($75) o Kommo Avanzado ($100) son las opciones más accesibles.</li>
-        <li><strong>Mayor precio básico:</strong> Vambe ($413/mes), justificado por incluir IA de base, ingeniero asignado y dashboards, aunque el setup asciende a $600.</li>
-        <li><strong>Plan avanzado más accesible:</strong> Zenvia Specialist ($150/mes) con 10 usuarios, WhatsApp Business, 5 bots y reportería con IA.</li>
-        <li><strong>Tablero Kanban:</strong> Solo Kommo y Vambe lo ofrecen nativamente. Zenvia tiene un sistema de tickets alternativo con vista de listado y SLA.</li>
-        <li><strong>Instagram sin cargo extra:</strong> Chattigo, Zenvia, Kommo y Vambe lo incluyen. Callbell cobra $22/mes y en B2chat depende de la selección de canales.</li>
-        <li><strong>Facebook Messenger sin cargo extra:</strong> Chattigo, Zenvia, Kommo lo incluyen. Callbell incluye la 1ª página sin costo. Vambe solo en Advanced. B2chat depende de la selección de canales.</li>
-        <li><strong>Reportería con IA:</strong> Vambe es el único que la incluye en ambos planes de forma nativa. Zenvia la suma en el plan Specialist. Kommo ofrece IA aplicada a conversaciones, no a dashboards analíticos.</li>
-      </ul>
+        <div class="strategy-card">
+          <div class="strategy-icon">🎯</div>
+          <h4>Exigencias Crecientes</h4>
+          <p>Clientes demandan más funcionalidades sin aumentos de precio</p>
+          <div style="margin-top: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+              <span style="color: var(--text-secondary); font-size: 0.75rem;">Expectativas</span>
+              <div style="flex: 1; max-width: 120px; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                <div style="width: 85%; height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); border-radius: 4px;"></div>
+              </div>
+              <span style="color: var(--accent-green); font-size: 0.75rem; font-weight: 700;">Alta</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="strategy-result">
+        <div style="text-align: center;">
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">ANÁLISIS</div>
+          <div style="font-size: 1.1rem; color: var(--text-primary);">Competencia + Estándar de mercado + Demanda</div>
+        </div>
+        <div class="result-arrow">→</div>
+        <div class="result-box">
+          <div class="label">Decisión Estratégica</div>
+          <div class="value">Chatflow $0</div>
+          <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Incluido en el plan</div>
+        </div>
+      </div>
     </div>
 
   </div><!-- /container -->
@@ -772,137 +891,104 @@
     Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
 
     const platforms = ['Chattigo', 'Zenvia', 'Callbell', 'Kommo', 'Vambe', 'B2chat'];
-    const basicPrices   = [195, 20, 75, 100, 413, 178];
-    const advancedPrices = [449, 150, 200, 450, 574, 283];
-    const avgBasic    = 164;
-    const avgAdvanced = 351;
+    const basicPrices   = [195, 150, 75, 100, 413, 178];
+    const advancedPrices = [449, 410, 200, 450, 574, 283];
+
+    // Pip prices
+    const pipBasic = 219;
+    const pipAdvanced = 279;
+    const pipBasicAdd = 394;  // 219 + 175
+    const pipAdvancedAdd = 454; // 279 + 175
 
     const colorGreen  = 'rgba(0, 255, 136, 0.75)';
     const colorCyan   = 'rgba(0, 212, 255, 0.75)';
-    const colorPurple = 'rgba(124, 58, 237, 0.7)';
-    const colorAmber  = 'rgba(245, 158, 11, 0.7)';
+    const colorPip    = 'rgba(255, 107, 53, 0.9)';
+    const colorPipAdd = 'rgba(124, 58, 237, 0.85)';
 
     // Shared chart options
     const baseOptions = {
       responsive: true,
-      plugins: { legend: { display: true, labels: { color: '#94a3b8', font: { family: 'Sora' } } } },
+      plugins: { legend: { display: false } },
       scales: {
         x: { ticks: { color: '#94a3b8', font: { family: 'Sora', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
         y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 }, callback: v => '$' + v }, grid: { color: 'rgba(255,255,255,0.04)' } }
       }
     };
 
-    // 1. Grouped bar: básico vs avanzado por plataforma
-    new Chart(document.getElementById('chartComparativa'), {
-      type: 'bar',
-      data: {
-        labels: platforms,
-        datasets: [
-          { label: 'Plan Básico', data: basicPrices, backgroundColor: colorGreen, borderRadius: 5 },
-          { label: 'Plan Avanzado', data: advancedPrices, backgroundColor: colorCyan, borderRadius: 5 }
-        ]
-      },
-      options: { ...baseOptions, plugins: { ...baseOptions.plugins } }
-    });
-
-    // 2. Distribución básicos (sorted)
-    const basicSorted = [...basicPrices.map((p,i) => ({ name: platforms[i], val: p }))]
+    // 1. Distribución básicos CON PIP (sin adicionales)
+    const basicWithPip = [...basicPrices.map((p,i) => ({ name: platforms[i], val: p, isPip: false })), { name: 'Pip Pyme', val: pipBasic, isPip: true }]
       .sort((a, b) => a.val - b.val);
-    new Chart(document.getElementById('chartDistBasico'), {
+    new Chart(document.getElementById('chartBasicoPip'), {
       type: 'bar',
       data: {
-        labels: basicSorted.map(d => d.name),
+        labels: basicWithPip.map(d => d.name),
         datasets: [{
           label: 'Precio Plan Básico',
-          data: basicSorted.map(d => d.val),
-          backgroundColor: basicSorted.map(d => {
-            if (d.val === Math.min(...basicPrices)) return 'rgba(0,255,136,0.9)';
-            if (d.val === Math.max(...basicPrices)) return 'rgba(248, 113, 113, 0.85)';
-            return colorGreen;
-          }),
-          borderRadius: 5
+          data: basicWithPip.map(d => d.val),
+          backgroundColor: basicWithPip.map(d => d.isPip ? colorPip : colorGreen),
+          borderRadius: 5,
+          borderWidth: basicWithPip.map(d => d.isPip ? 3 : 0),
+          borderColor: basicWithPip.map(d => d.isPip ? '#fff' : 'transparent')
         }]
       },
-      options: {
-        ...baseOptions,
-        plugins: {
-          ...baseOptions.plugins,
-          annotation: {},
-          legend: { display: false }
-        }
-      }
+      options: baseOptions
     });
 
-    // 3. Distribución avanzados (sorted)
-    const advSorted = [...advancedPrices.map((p,i) => ({ name: platforms[i], val: p }))]
+    // 4. Distribución avanzados CON PIP (sin adicionales)
+    const advWithPip = [...advancedPrices.map((p,i) => ({ name: platforms[i], val: p, isPip: false })), { name: 'Pip Pro', val: pipAdvanced, isPip: true }]
       .sort((a, b) => a.val - b.val);
-    new Chart(document.getElementById('chartDistAvanzado'), {
+    new Chart(document.getElementById('chartAvanzadoPip'), {
       type: 'bar',
       data: {
-        labels: advSorted.map(d => d.name),
+        labels: advWithPip.map(d => d.name),
         datasets: [{
           label: 'Precio Plan Avanzado',
-          data: advSorted.map(d => d.val),
-          backgroundColor: advSorted.map(d => {
-            if (d.val === Math.min(...advancedPrices)) return 'rgba(0,212,255,0.95)';
-            if (d.val === Math.max(...advancedPrices)) return 'rgba(248, 113, 113, 0.85)';
-            return colorCyan;
-          }),
-          borderRadius: 5
+          data: advWithPip.map(d => d.val),
+          backgroundColor: advWithPip.map(d => d.isPip ? colorPip : colorCyan),
+          borderRadius: 5,
+          borderWidth: advWithPip.map(d => d.isPip ? 3 : 0),
+          borderColor: advWithPip.map(d => d.isPip ? '#fff' : 'transparent')
         }]
       },
-      options: {
-        ...baseOptions,
-        plugins: { ...baseOptions.plugins, legend: { display: false } }
-      }
+      options: baseOptions
     });
 
-    // 4. Promedios vs precios individuales
-    new Chart(document.getElementById('chartPromedios'), {
+    // 5. Distribución básicos CON PIP + ADICIONALES
+    const basicWithPipAdd = [...basicPrices.map((p,i) => ({ name: platforms[i], val: p, isPip: false })), { name: 'Pip Pyme + IA', val: pipBasicAdd, isPip: true }]
+      .sort((a, b) => a.val - b.val);
+    new Chart(document.getElementById('chartBasicoPipAdd'), {
       type: 'bar',
       data: {
-        labels: platforms,
-        datasets: [
-          { label: 'Plan Básico', data: basicPrices, backgroundColor: colorGreen, borderRadius: 5, order: 2 },
-          { label: 'Plan Avanzado', data: advancedPrices, backgroundColor: colorCyan, borderRadius: 5, order: 2 },
-          {
-            label: 'Promedio Básico ($164)',
-            data: Array(6).fill(avgBasic),
-            type: 'line',
-            borderColor: 'rgba(0,255,136,0.9)',
-            borderWidth: 2,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            fill: false,
-            order: 1
-          },
-          {
-            label: 'Promedio Avanzado ($351)',
-            data: Array(6).fill(avgAdvanced),
-            type: 'line',
-            borderColor: 'rgba(0,212,255,0.9)',
-            borderWidth: 2,
-            borderDash: [6, 4],
-            pointRadius: 0,
-            fill: false,
-            order: 1
-          }
-        ]
+        labels: basicWithPipAdd.map(d => d.name),
+        datasets: [{
+          label: 'Precio Plan Básico',
+          data: basicWithPipAdd.map(d => d.val),
+          backgroundColor: basicWithPipAdd.map(d => d.isPip ? colorPipAdd : colorGreen),
+          borderRadius: 5,
+          borderWidth: basicWithPipAdd.map(d => d.isPip ? 3 : 0),
+          borderColor: basicWithPipAdd.map(d => d.isPip ? '#fff' : 'transparent')
+        }]
       },
-      options: {
-        ...baseOptions,
-        plugins: {
-          ...baseOptions.plugins,
-          legend: {
-            display: true,
-            labels: {
-              color: '#94a3b8',
-              font: { family: 'Sora', size: 11 },
-              boxWidth: 12
-            }
-          }
-        }
-      }
+      options: baseOptions
+    });
+
+    // 6. Distribución avanzados CON PIP + ADICIONALES
+    const advWithPipAdd = [...advancedPrices.map((p,i) => ({ name: platforms[i], val: p, isPip: false })), { name: 'Pip Pro + IA', val: pipAdvancedAdd, isPip: true }]
+      .sort((a, b) => a.val - b.val);
+    new Chart(document.getElementById('chartAvanzadoPipAdd'), {
+      type: 'bar',
+      data: {
+        labels: advWithPipAdd.map(d => d.name),
+        datasets: [{
+          label: 'Precio Plan Avanzado',
+          data: advWithPipAdd.map(d => d.val),
+          backgroundColor: advWithPipAdd.map(d => d.isPip ? colorPipAdd : colorCyan),
+          borderRadius: 5,
+          borderWidth: advWithPipAdd.map(d => d.isPip ? 3 : 0),
+          borderColor: advWithPipAdd.map(d => d.isPip ? '#fff' : 'transparent')
+        }]
+      },
+      options: baseOptions
     });
   </script>
 </body>
