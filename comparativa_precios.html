@@ -568,19 +568,6 @@
       </div>
     </div>
 
-    <!-- CHARTS: DISTRIBUCIÓN SIN PIP -->
-    <div class="section-title">📊 Distribución de Precios - Competencia</div>
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h3>Distribución de precios (planes básicos)</h3>
-        <canvas id="chartDistBasico"></canvas>
-      </div>
-      <div class="chart-card">
-        <h3>Distribución de precios (planes avanzados)</h3>
-        <canvas id="chartDistAvanzado"></canvas>
-      </div>
-    </div>
-
     <!-- CHARTS: DISTRIBUCIÓN CON PIP (SIN ADICIONALES) -->
     <div class="section-title" style="color: var(--accent-pip);">🚀 Pip vs Competencia (Sin Adicionales)</div>
     <div class="charts-grid">
@@ -928,49 +915,7 @@
       }
     };
 
-    // 1. Distribución básicos (sorted) - SIN PIP
-    const basicSorted = [...basicPrices.map((p,i) => ({ name: platforms[i], val: p }))]
-      .sort((a, b) => a.val - b.val);
-    new Chart(document.getElementById('chartDistBasico'), {
-      type: 'bar',
-      data: {
-        labels: basicSorted.map(d => d.name),
-        datasets: [{
-          label: 'Precio Plan Básico',
-          data: basicSorted.map(d => d.val),
-          backgroundColor: basicSorted.map(d => {
-            if (d.val === Math.min(...basicPrices)) return 'rgba(0,255,136,0.9)';
-            if (d.val === Math.max(...basicPrices)) return 'rgba(248, 113, 113, 0.85)';
-            return colorGreen;
-          }),
-          borderRadius: 5
-        }]
-      },
-      options: baseOptions
-    });
-
-    // 2. Distribución avanzados (sorted) - SIN PIP
-    const advSorted = [...advancedPrices.map((p,i) => ({ name: platforms[i], val: p }))]
-      .sort((a, b) => a.val - b.val);
-    new Chart(document.getElementById('chartDistAvanzado'), {
-      type: 'bar',
-      data: {
-        labels: advSorted.map(d => d.name),
-        datasets: [{
-          label: 'Precio Plan Avanzado',
-          data: advSorted.map(d => d.val),
-          backgroundColor: advSorted.map(d => {
-            if (d.val === Math.min(...advancedPrices)) return 'rgba(0,212,255,0.95)';
-            if (d.val === Math.max(...advancedPrices)) return 'rgba(248, 113, 113, 0.85)';
-            return colorCyan;
-          }),
-          borderRadius: 5
-        }]
-      },
-      options: baseOptions
-    });
-
-    // 3. Distribución básicos CON PIP (sin adicionales)
+    // 1. Distribución básicos CON PIP (sin adicionales)
     const basicWithPip = [...basicPrices.map((p,i) => ({ name: platforms[i], val: p, isPip: false })), { name: 'Pip Pyme', val: pipBasic, isPip: true }]
       .sort((a, b) => a.val - b.val);
     new Chart(document.getElementById('chartBasicoPip'), {
