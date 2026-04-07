@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparativa de Precios y Funcionalidades CRM 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #0a0e27;
+      --bg-secondary: #111936;
+      --bg-tertiary: #1a2351;
+      --accent-green: #00ff88;
+      --accent-cyan: #00d4ff;
+      --accent-purple: #7c3aed;
+      --accent-amber: #f59e0b;
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --border-color: rgba(148, 163, 184, 0.1);
+      --card-hover: rgba(0, 255, 136, 0.05);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .noise-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      padding: 1rem 1.5rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover, .nav-link.active { color: var(--accent-cyan); }
+
+    /* ── HEADER ── */
+    .page-header { text-align: center; margin-bottom: 3rem; }
+
+    h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    /* ── STAT CARDS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 212, 255, 0.1);
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── TABLE WRAPPER ── */
+    .table-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+      overflow-x: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      color: var(--accent-cyan);
+      font-weight: 700;
+      padding: 0.9rem 1rem;
+      text-align: center;
+      border-bottom: 2px solid var(--border-color);
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+    }
+
+    th.left { text-align: left; }
+
+    td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.88rem;
+    }
+
+    td.platform-name {
+      text-align: left;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'Sora', sans-serif;
+    }
+
+    td.price-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+    }
+
+    tr:hover td { background: var(--card-hover); }
+
+    .plan-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-weight: 400;
+    }
+
+    .price-basic { color: var(--accent-green); }
+    .price-advanced { color: var(--accent-cyan); }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+    }
+
+    .badge-purple { background: rgba(124,58,237,0.25); color: #d8b4fe; }
+    .badge-cyan   { background: rgba(0,212,255,0.15); color: var(--accent-cyan); }
+    .badge-amber  { background: rgba(245,158,11,0.2); color: #fcd34d; }
+
+    /* ── FEATURE ICONS ── */
+    .feat-yes  { color: var(--accent-green); font-size: 1.1rem; }
+    .feat-no   { color: #ef4444; font-size: 1.1rem; }
+    .feat-warn { color: var(--accent-amber); font-size: 1.1rem; }
+
+    /* ── TOOLTIP ── */
+    .tip-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+
+    .tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(148,163,184,0.2);
+      color: var(--text-secondary);
+      font-size: 10px;
+      cursor: help;
+      font-style: normal;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .tip-icon:hover { background: rgba(0,212,255,0.25); color: var(--accent-cyan); }
+
+    .tip-icon::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e2d5a;
+      border: 1px solid var(--accent-cyan);
+      color: var(--text-primary);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      white-space: normal;
+      width: 230px;
+      z-index: 100;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .tip-icon:hover::after { opacity: 1; }
+
+    /* Arrow for tooltip */
+    .tip-icon::before {
+      content: '';
+      position: absolute;
+      bottom: calc(100% + 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--accent-cyan);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 101;
+    }
+
+    .tip-icon:hover::before { opacity: 1; }
+
+    /* ── CHARTS ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .chart-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .chart-card h3 {
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+
+    /* ── INSIGHTS BOX ── */
+    .insights-box {
+      background: linear-gradient(135deg, rgba(0,255,136,0.05), rgba(0,212,255,0.05));
+      border: 1px solid var(--accent-green);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .insights-box ul { list-style: none; padding: 0; }
+
+    .insights-box li {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+      position: relative;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .insights-box li::before {
+      content: '➤';
+      color: var(--accent-green);
+      position: absolute;
+      left: 0;
+    }
+
+    .insights-box li strong { color: var(--text-primary); }
+
+    /* ── NOTES ── */
+    .notas {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 1.25rem;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .notas p { margin-bottom: 0.4rem; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 2.5rem 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .nav-bar { gap: 0.75rem; padding: 0.75rem 1rem; }
+      .nav-link { font-size: 0.8rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise-bg"></div>
+
+  <div class="container">
+
+    <!-- NAV -->
+    <nav class="nav-bar">
+      <a href="index.html" class="nav-link">🤖 Agentes IA</a>
+      <a href="precios.html" class="nav-link">💰 Precios CRM</a>
+      <a href="kanban_crm_dashboard_dark.html" class="nav-link">🎯 Kanban CRM</a>
+      <a href="chatbot_builders.html" class="nav-link">💬 Bot Builders</a>
+      <a href="comparativa_precios.html" class="nav-link active">📊 Comparativa de Planes</a>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <h1>Comparativa de Planes y Funcionalidades</h1>
+      <p class="subtitle">
+        Análisis de 6 plataformas CRM con IA: precios de planes representativos,
+        distribución de costos y comparativa de funcionalidades clave.
+      </p>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Plataformas analizadas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--accent-green)">$164</div>
+        <div class="stat-label">Promedio plan básico</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: var(--accent-cyan)">$351</div>
+        <div class="stat-label">Promedio plan avanzado</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: #fcd34d">$20</div>
+        <div class="stat-label">Mínimo plan básico</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: #f87171">$413</div>
+        <div class="stat-label">Máximo plan básico</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color: #f87171">$574</div>
+        <div class="stat-label">Máximo plan avanzado</div>
+      </div>
+    </div>
+
+    <!-- PRICING TABLE -->
+    <div class="table-container">
+      <div class="section-title">📋 Tabla de Precios por Plan</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left" style="width: 160px">Plataforma</th>
+            <th>Plan Básico</th>
+            <th>Precio Básico</th>
+            <th>Plan Avanzado</th>
+            <th>Precio Avanzado</th>
+            <th>Usuarios (básico)</th>
+            <th>Usuarios (avanzado)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="platform-name">Chattigo</td>
+            <td>Base</td>
+            <td class="price-cell price-basic">$195 <span class="plan-label">USD/mes</span></td>
+            <td>Corporate</td>
+            <td class="price-cell price-advanced">$449 <span class="plan-label">USD/mes</span></td>
+            <td>3</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Zenvia</td>
+            <td>Base <span class="badge badge-amber">WA sandbox</span></td>
+            <td class="price-cell price-basic">$20 <span class="plan-label">USD/mes</span></td>
+            <td>Specialist</td>
+            <td class="price-cell price-advanced">$150 <span class="plan-label">USD/mes</span></td>
+            <td>1</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Callbell</td>
+            <td>Base</td>
+            <td class="price-cell price-basic">$75 <span class="plan-label">USD/mes</span></td>
+            <td>Plus</td>
+            <td class="price-cell price-advanced">$200 <span class="plan-label">USD/mes</span></td>
+            <td>5</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Kommo <span class="badge badge-purple">ajustado</span></td>
+            <td>Avanzado 5u</td>
+            <td class="price-cell price-basic">$100 <span class="plan-label">USD/mes</span></td>
+            <td>Pro 10u</td>
+            <td class="price-cell price-advanced">$450 <span class="plan-label">USD/mes</span></td>
+            <td>5</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td class="platform-name">Vambe</td>
+            <td>Básico</td>
+            <td class="price-cell price-basic">$413 <span class="plan-label">USD/mes</span></td>
+            <td>Advanced</td>
+            <td class="price-cell price-advanced">$574 <span class="plan-label">USD/mes</span></td>
+            <td>3</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td class="platform-name">B2chat</td>
+            <td>Básico</td>
+            <td class="price-cell price-basic">$178 <span class="plan-label">USD/mes</span></td>
+            <td>Premium</td>
+            <td class="price-cell price-advanced">$283 <span class="plan-label">USD/mes</span></td>
+            <td>5</td>
+            <td>10</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="notas">
+        <p><strong>Kommo (ajustado):</strong> El plan Básico original ($75, 5 usuarios) es muy limitado: sin mensajes masivos, sin bots y sin automatizaciones. Se recomienda analizar el plan <em>Avanzado con 5 usuarios ($100/mes)</em> y el plan <em>Pro con 10 usuarios ($450/mes)</em> para una comparativa más realista.</p>
+        <p><strong>Zenvia Base:</strong> Incluye WhatsApp Sandbox (solo para pruebas). El plan Specialist es el primero en incluir WhatsApp Business productivo.</p>
+      </div>
+    </div>
+
+    <!-- FEATURE TABLE -->
+    <div class="table-container">
+      <div class="section-title">⚙️ Comparativa de Funcionalidades Clave</div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left" style="width: 220px">Funcionalidad</th>
+            <th>Chattigo</th>
+            <th>Zenvia</th>
+            <th>Callbell</th>
+            <th>Kommo</th>
+            <th>Vambe</th>
+            <th>B2chat</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- INSTAGRAM -->
+          <tr>
+            <td style="text-align:left; font-weight:600;">
+              📸 Bandeja Instagram
+            </td>
+            <!-- Chattigo -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Instagram Direct incluido sin cargo adicional en todos los planes.">i</i>
+              </span>
+            </td>
+            <!-- Zenvia -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Instagram incluido sin cargo extra. Disponible desde el plan Base.">i</i>
+              </span>
+            </td>
+            <!-- Callbell -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Instagram Direct tiene un costo adicional de $22 USD/mes. No está incluido en el precio base del plan.">i</i>
+              </span>
+            </td>
+            <!-- Kommo -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Instagram incluido sin cargo extra en todos los planes de Kommo.">i</i>
+              </span>
+            </td>
+            <!-- Vambe -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Instagram incluido sin cargo adicional en ambos planes (Básico y Advanced).">i</i>
+              </span>
+            </td>
+            <!-- B2chat -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Instagram puede incluirse como uno de los canales del plan (hasta 2 en Básico, hasta 5 en Premium). Canal adicional cuesta $16 USD/mes. La inclusión depende de la selección de canales del cliente.">i</i>
+              </span>
+            </td>
+          </tr>
+
+          <!-- FACEBOOK -->
+          <tr>
+            <td style="text-align:left; font-weight:600;">
+              💬 Bandeja Facebook Messenger
+            </td>
+            <!-- Chattigo -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Facebook Messenger incluido sin cargo adicional en todos los planes.">i</i>
+              </span>
+            </td>
+            <!-- Zenvia -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Facebook Messenger incluido sin cargo extra. Disponible desde el plan Base.">i</i>
+              </span>
+            </td>
+            <!-- Callbell -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="La integración con la 1ª página de Facebook está incluida sin costo adicional. Las cuentas adicionales de Facebook cuestan $22 USD/mes cada una.">i</i>
+              </span>
+            </td>
+            <!-- Kommo -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Facebook Messenger incluido en todos los planes de Kommo sin cargo adicional.">i</i>
+              </span>
+            </td>
+            <!-- Vambe -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Facebook Messenger solo está disponible en el plan Advanced ($574/mes). No está incluido en el plan Básico ($413/mes).">i</i>
+              </span>
+            </td>
+            <!-- B2chat -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Facebook puede incluirse como uno de los canales del plan (hasta 2 en Básico, hasta 5 en Premium). Canal adicional cuesta $16 USD/mes. La inclusión depende de la selección de canales del cliente.">i</i>
+              </span>
+            </td>
+          </tr>
+
+          <!-- KANBAN -->
+          <tr>
+            <td style="text-align:left; font-weight:600;">
+              📌 Tablero Kanban
+            </td>
+            <!-- Chattigo -->
+            <td>
+              <span class="feat-no">✖</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Chattigo no ofrece tablero tipo Kanban en ninguno de sus planes.">i</i>
+              </span>
+            </td>
+            <!-- Zenvia -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Zenvia no tiene tablero Kanban, pero ofrece un sistema de tickets con vista de listado, filtros avanzados, etiquetas (prioridad, categoría, responsable) y cumplimiento de SLA. La vista es funcional pero no es arrastrar-y-soltar tipo Kanban.">i</i>
+              </span>
+            </td>
+            <!-- Callbell -->
+            <td>
+              <span class="feat-no">✖</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Callbell no ofrece tablero Kanban. Su foco es la bandeja compartida de mensajes.">i</i>
+              </span>
+            </td>
+            <!-- Kommo -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Kommo ofrece 'Embudos', tableros tipo Kanban como funcionalidad central. El plan básico incluye múltiples embudos sin automatizaciones. El plan Pro agrega automatizaciones completas con IA.">i</i>
+              </span>
+            </td>
+            <!-- Vambe -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Vambe incluye 'Embudo de Ventas' (tablero tipo Kanban). El plan Básico incluye 1 embudo y el Advanced incluye 2 embudos.">i</i>
+              </span>
+            </td>
+            <!-- B2chat -->
+            <td>
+              <span class="feat-no">✖</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="B2chat no incluye tablero tipo Kanban. Ofrece reportes y auditorías, pero sin vista de pipeline de ventas.">i</i>
+              </span>
+            </td>
+          </tr>
+
+          <!-- AI REPORTING -->
+          <tr>
+            <td style="text-align:left; font-weight:600;">
+              🧠 Reportería Inteligente (IA)
+            </td>
+            <!-- Chattigo -->
+            <td>
+              <span class="feat-no">✖</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Chattigo no incluye reportería inteligente con IA. Ofrece reportería estándar. La IA se cotiza a medida con costo adicional.">i</i>
+              </span>
+            </td>
+            <!-- Zenvia -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="La reportería con IA (dashboards analíticos avanzados) está disponible solo en el plan Specialist ($150/mes). El plan Base incluye reportería básica sin IA.">i</i>
+              </span>
+            </td>
+            <!-- Callbell -->
+            <td>
+              <span class="feat-no">✖</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Callbell no ofrece reportería con IA. El plan Plus mejora los reportes con filtros y actualización en tiempo real, pero no incluye análisis con IA.">i</i>
+              </span>
+            </td>
+            <!-- Kommo -->
+            <td>
+              <span class="feat-warn">⚠</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Kommo no tiene reportería con IA en sentido tradicional, pero la IA resume chats automáticamente, identifica puntos clave y detecta dudas o problemas. El plan Pro agrega análisis de conversaciones con IA, sugerencias y análisis ROI.">i</i>
+              </span>
+            </td>
+            <!-- Vambe -->
+            <td>
+              <span class="feat-yes">✔</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="Vambe incluye reportería con IA aplicada al análisis de razones de no-compra ('Loss Reasons in Ticket Tracking'). Disponible en ambos planes con los Dashboards personalizables del Vambe AI Core System.">i</i>
+              </span>
+            </td>
+            <!-- B2chat -->
+            <td>
+              <span class="feat-no">✖</span>
+              <span class="tip-wrap">
+                <i class="tip-icon" data-tip="B2chat no incluye reportería con IA. Ofrece reportes y auditorías de hasta 6 meses de historial, sin componente de análisis inteligente.">i</i>
+              </span>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <div style="display:flex; gap:1.5rem; margin-top:1.25rem; flex-wrap:wrap; font-size:0.8rem; color:var(--text-secondary);">
+        <span><span class="feat-yes">✔</span> Incluido sin costo adicional</span>
+        <span><span class="feat-warn">⚠</span> Parcial / con condiciones o costo extra</span>
+        <span><span class="feat-no">✖</span> No disponible</span>
+        <span style="margin-left:auto; opacity:0.7;">Pasa el cursor sobre <span style="background:rgba(148,163,184,0.2); border-radius:50%; padding:1px 5px; font-size:10px;">i</span> para ver notas</span>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Precios por plataforma: Básico vs Avanzado</h3>
+        <canvas id="chartComparativa"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Distribución de precios (planes básicos, orden ascendente)</h3>
+        <canvas id="chartDistBasico"></canvas>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Distribución de precios (planes avanzados, orden ascendente)</h3>
+        <canvas id="chartDistAvanzado"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Promedio de planes vs precio individual</h3>
+        <canvas id="chartPromedios"></canvas>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- INSIGHTS -->
+    <div class="insights-box">
+      <div class="section-title">💡 Conclusiones Clave</div>
+      <ul>
+        <li><strong>Menor precio básico:</strong> Zenvia ($20/mes) — aunque su plan Base solo incluye WhatsApp Sandbox (no productivo). Para uso real, Callbell ($75) o Kommo Avanzado ($100) son las opciones más accesibles.</li>
+        <li><strong>Mayor precio básico:</strong> Vambe ($413/mes), justificado por incluir IA de base, ingeniero asignado y dashboards, aunque el setup asciende a $600.</li>
+        <li><strong>Plan avanzado más accesible:</strong> Zenvia Specialist ($150/mes) con 10 usuarios, WhatsApp Business, 5 bots y reportería con IA.</li>
+        <li><strong>Tablero Kanban:</strong> Solo Kommo y Vambe lo ofrecen nativamente. Zenvia tiene un sistema de tickets alternativo con vista de listado y SLA.</li>
+        <li><strong>Instagram sin cargo extra:</strong> Chattigo, Zenvia, Kommo y Vambe lo incluyen. Callbell cobra $22/mes y en B2chat depende de la selección de canales.</li>
+        <li><strong>Facebook Messenger sin cargo extra:</strong> Chattigo, Zenvia, Kommo lo incluyen. Callbell incluye la 1ª página sin costo. Vambe solo en Advanced. B2chat depende de la selección de canales.</li>
+        <li><strong>Reportería con IA:</strong> Vambe es el único que la incluye en ambos planes de forma nativa. Zenvia la suma en el plan Specialist. Kommo ofrece IA aplicada a conversaciones, no a dashboards analíticos.</li>
+      </ul>
+    </div>
+
+  </div><!-- /container -->
+
+  <script>
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+
+    const platforms = ['Chattigo', 'Zenvia', 'Callbell', 'Kommo', 'Vambe', 'B2chat'];
+    const basicPrices   = [195, 20, 75, 100, 413, 178];
+    const advancedPrices = [449, 150, 200, 450, 574, 283];
+    const avgBasic    = 164;
+    const avgAdvanced = 351;
+
+    const colorGreen  = 'rgba(0, 255, 136, 0.75)';
+    const colorCyan   = 'rgba(0, 212, 255, 0.75)';
+    const colorPurple = 'rgba(124, 58, 237, 0.7)';
+    const colorAmber  = 'rgba(245, 158, 11, 0.7)';
+
+    // Shared chart options
+    const baseOptions = {
+      responsive: true,
+      plugins: { legend: { display: true, labels: { color: '#94a3b8', font: { family: 'Sora' } } } },
+      scales: {
+        x: { ticks: { color: '#94a3b8', font: { family: 'Sora', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 }, callback: v => '$' + v }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    };
+
+    // 1. Grouped bar: básico vs avanzado por plataforma
+    new Chart(document.getElementById('chartComparativa'), {
+      type: 'bar',
+      data: {
+        labels: platforms,
+        datasets: [
+          { label: 'Plan Básico', data: basicPrices, backgroundColor: colorGreen, borderRadius: 5 },
+          { label: 'Plan Avanzado', data: advancedPrices, backgroundColor: colorCyan, borderRadius: 5 }
+        ]
+      },
+      options: { ...baseOptions, plugins: { ...baseOptions.plugins } }
+    });
+
+    // 2. Distribución básicos (sorted)
+    const basicSorted = [...basicPrices.map((p,i) => ({ name: platforms[i], val: p }))]
+      .sort((a, b) => a.val - b.val);
+    new Chart(document.getElementById('chartDistBasico'), {
+      type: 'bar',
+      data: {
+        labels: basicSorted.map(d => d.name),
+        datasets: [{
+          label: 'Precio Plan Básico',
+          data: basicSorted.map(d => d.val),
+          backgroundColor: basicSorted.map(d => {
+            if (d.val === Math.min(...basicPrices)) return 'rgba(0,255,136,0.9)';
+            if (d.val === Math.max(...basicPrices)) return 'rgba(248, 113, 113, 0.85)';
+            return colorGreen;
+          }),
+          borderRadius: 5
+        }]
+      },
+      options: {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          annotation: {},
+          legend: { display: false }
+        }
+      }
+    });
+
+    // 3. Distribución avanzados (sorted)
+    const advSorted = [...advancedPrices.map((p,i) => ({ name: platforms[i], val: p }))]
+      .sort((a, b) => a.val - b.val);
+    new Chart(document.getElementById('chartDistAvanzado'), {
+      type: 'bar',
+      data: {
+        labels: advSorted.map(d => d.name),
+        datasets: [{
+          label: 'Precio Plan Avanzado',
+          data: advSorted.map(d => d.val),
+          backgroundColor: advSorted.map(d => {
+            if (d.val === Math.min(...advancedPrices)) return 'rgba(0,212,255,0.95)';
+            if (d.val === Math.max(...advancedPrices)) return 'rgba(248, 113, 113, 0.85)';
+            return colorCyan;
+          }),
+          borderRadius: 5
+        }]
+      },
+      options: {
+        ...baseOptions,
+        plugins: { ...baseOptions.plugins, legend: { display: false } }
+      }
+    });
+
+    // 4. Promedios vs precios individuales
+    new Chart(document.getElementById('chartPromedios'), {
+      type: 'bar',
+      data: {
+        labels: platforms,
+        datasets: [
+          { label: 'Plan Básico', data: basicPrices, backgroundColor: colorGreen, borderRadius: 5, order: 2 },
+          { label: 'Plan Avanzado', data: advancedPrices, backgroundColor: colorCyan, borderRadius: 5, order: 2 },
+          {
+            label: 'Promedio Básico ($164)',
+            data: Array(6).fill(avgBasic),
+            type: 'line',
+            borderColor: 'rgba(0,255,136,0.9)',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+            order: 1
+          },
+          {
+            label: 'Promedio Avanzado ($351)',
+            data: Array(6).fill(avgAdvanced),
+            type: 'line',
+            borderColor: 'rgba(0,212,255,0.9)',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            pointRadius: 0,
+            fill: false,
+            order: 1
+          }
+        ]
+      },
+      options: {
+        ...baseOptions,
+        plugins: {
+          ...baseOptions.plugins,
+          legend: {
+            display: true,
+            labels: {
+              color: '#94a3b8',
+              font: { family: 'Sora', size: 11 },
+              boxWidth: 12
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

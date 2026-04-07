@@ -56,6 +56,29 @@
             z-index: 1;
         }
 
+        /* Nav Bar */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active { color: var(--accent-cyan); }
+
         /* Header */
         header {
             text-align: center;
@@ -507,6 +530,14 @@
     <div class="noise-bg"></div>
     
     <div class="container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-link">🤖 Agentes IA</a>
+            <a href="precios.html" class="nav-link">💰 Precios CRM</a>
+            <a href="kanban_crm_dashboard_dark.html" class="nav-link active">🎯 Kanban CRM</a>
+            <a href="chatbot_builders.html" class="nav-link">💬 Bot Builders</a>
+            <a href="comparativa_precios.html" class="nav-link">📊 Comparativa de Planes</a>
+        </nav>
         <!-- Header -->
         <header>
             <h1>🎯 CRM WhatsApp + Tableros Kanban</h1>
